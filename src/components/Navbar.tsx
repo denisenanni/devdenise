@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
+import { memo, useCallback } from "react";
 
-const Navbar = () => {
-  const links = ["home", "about", "projects", "resume", "contact"];
+const links = ["home", "about", "projects", "resume", "contact"];
 
-  const scrollToSection = (id: string) => {
+const Navbar = memo(() => {
+  const scrollToSection = useCallback((id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  }, []);
 
   return (
     <nav className="fixed top-0 w-full glass border-b border-slate-400/20 z-50 animate-slide-down">
@@ -28,6 +29,8 @@ const Navbar = () => {
       </div>
     </nav>
   );
-};
+});
+
+Navbar.displayName = "Navbar";
 
 export default Navbar;

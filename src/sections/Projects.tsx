@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProjectCard from "../components/ProjectCard";
+import { fadeInUp, createAnimationProps } from "../utils/animations";
 
 const projects = [
   {
@@ -46,9 +47,13 @@ const Projects = () => {
           {projects.map((project, index) => (
             <motion.div
               key={project.title}
-              initial={{ opacity: 0, y: 50 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
+              {...createAnimationProps(
+                {
+                  ...fadeInUp,
+                  transition: { ...fadeInUp.transition, delay: index * 0.2 },
+                },
+                inView
+              )}
             >
               <ProjectCard
                 title={project.title}

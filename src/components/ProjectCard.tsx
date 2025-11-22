@@ -1,4 +1,5 @@
 import { ExternalLink, Github } from "lucide-react";
+import { memo } from "react";
 
 interface ProjectCardProps {
   title: string;
@@ -9,7 +10,7 @@ interface ProjectCardProps {
   image?: string;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({
+const ProjectCard: React.FC<ProjectCardProps> = memo(({
   title,
   description,
   tech,
@@ -28,6 +29,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               src={image}
               alt={title}
               className="rounded-lg w-full h-64 object-cover"
+              loading="lazy"
+              width="600"
+              height="256"
             />
           </div>
         )}
@@ -71,6 +75,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ProjectCard.displayName = "ProjectCard";
 
 export default ProjectCard;

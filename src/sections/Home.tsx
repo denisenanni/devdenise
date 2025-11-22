@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { fadeInDown, createAnimationProps } from "../utils/animations";
 
 const Home = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
@@ -11,9 +12,7 @@ const Home = () => {
       className="section bg-navy-900"
     >
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8 }}
+        {...createAnimationProps(fadeInDown, inView)}
         className="section-content text-center"
       >
         <div className="mb-4">

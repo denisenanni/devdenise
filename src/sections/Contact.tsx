@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { fadeInUp, createAnimationProps } from "../utils/animations";
 
 const Contact = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
@@ -13,13 +14,13 @@ const Contact = () => {
     "idle" | "sending" | "success" | "error"
   >("idle");
 
-  const handleChange = (
+  const handleChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Simple validation
@@ -52,14 +53,12 @@ const Contact = () => {
       console.error(err);
       setStatus("error");
     }
-  };
+  }, [formData]);
 
   return (
     <section id="contact" ref={ref} className="section bg-navy-900">
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8 }}
+        {...createAnimationProps(fadeInUp, inView)}
         className="section-content"
       >
         <div className="flex items-center mb-12">

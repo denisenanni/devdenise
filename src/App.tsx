@@ -1,10 +1,12 @@
+import { lazy, Suspense } from "react";
 import Home from "./sections/Home";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Contact from "./sections/Contact";
 import About from "./sections/About";
-import Projects from "./sections/Projects";
-import Resume from "./sections/Resume";
+
+const Projects = lazy(() => import("./sections/Projects"));
+const Resume = lazy(() => import("./sections/Resume"));
+const Contact = lazy(() => import("./sections/Contact"));
 
 function App() {
   return (
@@ -12,9 +14,11 @@ function App() {
       <Navbar />
       <Home />
       <About />
-      <Projects />
-      <Resume />
-      <Contact />
+      <Suspense fallback={<div className="section bg-navy-900" />}>
+        <Projects />
+        <Resume />
+        <Contact />
+      </Suspense>
       <Footer />
     </div>
   );
