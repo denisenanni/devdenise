@@ -347,7 +347,11 @@ To complete the deployment setup, you need to:
 2. `.github/workflows/deploy.yml` - New deployment workflow (created)
 
 ### Deployment URL
-https://denisenanni.github.io/devdenise/
+- Custom Domain: https://devdenise.com
+- GitHub Pages: https://denisenanni.github.io/devdenise/
+
+### Note on Custom Domain
+When using a custom domain, the vite.config.ts base path must be set to `'/'` instead of `'/devdenise/'`.
 
 ---
 
