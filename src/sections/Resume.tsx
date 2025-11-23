@@ -1,71 +1,47 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { fadeInUp, fadeInLeft, createAnimationProps } from "../utils/animations";
+import { useState } from "react";
 
 const experiences = [
   {
     title: "Front-end/Full Stack Engineer",
     company: "Outmatic",
     location: "Remote",
-    period: "December 2022 - Present",
-    description: [
-      "Development of new features, test and bug fixing on CMS web applications and E-commerce platforms",
-      "Working with React, ChakraUI for frontend development",
-      "Started working with .NET framework in November 2024",
-      "Collaborating with cross-functional teams to deliver high-quality solutions",
-    ],
+    period: "Dec 2022 - Present",
+    description:
+      "Development of new features, test and bug fixing on CMS web applications and E-commerce platforms. Working with React, ChakraUI, and started with .NET in November 2024.",
     technologies: ["React", "TypeScript", "ChakraUI", ".NET", "E-commerce"],
+    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", // Purple
   },
   {
     title: "DevOps and Test Engineer",
     company: "Nexum AI",
     location: "Rome - Remote",
-    period: "February 2022 - November 2022",
-    description: [
-      "Research and implementation of automation tools across software development processes",
-      "Managed delivery, testing, and deployment pipelines",
-      "Infrastructure as Code using Terraform",
-      "CI/CD pipeline development and optimization",
-    ],
-    technologies: [
-      "Google Cloud Platform",
-      "GitLab",
-      "Terraform",
-      "NodeJS",
-      "Helm",
-    ],
+    period: "Feb - Nov 2022",
+    description:
+      "Research and implementation of automation tools across software development processes. Managed delivery, testing, and deployment pipelines with Infrastructure as Code.",
+    technologies: ["GCP", "GitLab", "Terraform", "NodeJS", "Helm"],
+    gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", // Pink-Red
   },
   {
     title: "Full Stack Web Developer",
     company: "Technode",
     location: "Brescia - Remote",
-    period: "December 2020 - December 2021",
-    description: [
-      "New features development and bug fixing on E-commerce platform",
-      "Worked with enterprise-level commerce solutions",
-      "Database management and optimization with DB2",
-      "Frontend development with modern JavaScript frameworks",
-    ],
-    technologies: [
-      "React",
-      "WebSphere Commerce",
-      "Java 8",
-      "DB2",
-      "JSTL",
-      "AngularJS",
-    ],
+    period: "Dec 2020 - Dec 2021",
+    description:
+      "New features development and bug fixing on E-commerce platform. Worked with enterprise-level commerce solutions and database optimization.",
+    technologies: ["React", "WebSphere", "Java 8", "DB2", "AngularJS"],
+    gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", // Blue
   },
   {
     title: "Full Stack Web Developer",
     company: "Catenate",
     location: "Rome",
-    period: "October 2019 - December 2020",
-    description: [
-      "Features development on banking CMS systems",
-      "Working with legacy and modern frameworks",
-      "Implementing secure and compliant banking solutions",
-    ],
+    period: "Oct 2019 - Dec 2020",
+    description:
+      "Features development on banking CMS systems. Working with legacy and modern frameworks to implement secure and compliant banking solutions.",
     technologies: ["Java 6/7", "AngularJS", "Angular 7+"],
+    gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", // Green-Cyan
   },
 ];
 
@@ -87,173 +63,232 @@ const certifications = [
   },
 ];
 
-const educationTechnologies = [
-  "Java SE/EE",
-  "Spring Boot",
-  "Angular",
-  "TypeScript",
-  "Android",
-  "MySQL",
-];
-
 const Resume = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleInteraction = (index: number) => {
+    setActiveIndex(index);
+  };
 
   return (
-    <section id="resume" ref={ref} className="section bg-navy-900">
+    <section id="resume" ref={ref} className="section bg-navy-900 overflow-x-hidden">
       <motion.div
-        {...createAnimationProps(fadeInUp, inView)}
+        initial={{ opacity: 0, y: 50 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8 }}
         className="section-content"
       >
         {/* Header */}
-        <div className="flex items-center mb-12 min-w-0">
+        <div className="flex items-center mb-8 md:mb-12 min-w-0">
           <span className="section-number">04.</span>
           <h2 className="section-title">Experience</h2>
           <div className="section-divider"></div>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          {/* Work Experience */}
-          <div className="space-y-8 mb-16">
+        {/* Interactive Experience Cards */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="space-y-2">
             {experiences.map((exp, index) => (
-              <motion.div
+              <div
                 key={index}
-                {...createAnimationProps(
-                  {
-                    ...fadeInLeft,
-                    transition: { ...fadeInLeft.transition, delay: index * 0.1 },
-                  },
-                  inView
-                )}
-                className="card-hover group"
+                data-active={index === activeIndex}
+                className="relative overflow-hidden rounded-lg border border-slate-400/20 bg-navy-800
+                cursor-pointer group transition-all duration-[600ms] ease-out w-full"
+                style={{
+                  height: index === activeIndex ? "auto" : "60px",
+                  minHeight: "60px",
+                }}
+                onClick={() => handleInteraction(index)}
+                onMouseEnter={() => handleInteraction(index)}
+                onFocus={() => handleInteraction(index)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleInteraction(index);
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-expanded={index === activeIndex}
               >
-                <div className="mb-4">
-                  <h3 className="text-xl text-slate-100 mb-2 group-hover:text-primary-400 transition-colors">
-                    {exp.title}
-                  </h3>
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <p className="text-primary-400 font-mono text-sm">
-                      {exp.company}
-                    </p>
-                    <span className="text-slate-400">•</span>
-                    <p className="text-slate-300 text-sm">{exp.location}</p>
-                  </div>
-                  <p className="text-slate-400 font-mono text-xs">
-                    {exp.period}
-                  </p>
-                </div>
+                {/* Background Gradient with Mask */}
+                <div
+                  className="absolute inset-0 transition-all duration-[720ms] ease-out
+                  opacity-40
+                  group-data-[active=true]:opacity-60"
+                  style={{
+                    background: exp.gradient,
+                    maskImage:
+                      "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.5) 100%)",
+                    WebkitMaskImage:
+                      "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.5) 100%)",
+                  }}
+                />
 
-                <ul className="space-y-2 text-slate-300 mb-4">
-                  {exp.description.map((item, i) => (
-                    <li key={i} className="flex">
-                      <span className="text-primary-400 mr-2 mt-1 flex-shrink-0">
-                        ▹
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Content */}
+                <div className="relative p-4 md:p-5">
+                  {/* Always Visible: Role, Company, Period */}
+                  <div className="flex items-center justify-between gap-4 min-h-[28px]">
+                    <div className="flex-1 flex items-center gap-3 md:gap-4">
+                      {/* Icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-5 h-5 flex-shrink-0 text-primary-400 opacity-60 
+                        transition-opacity duration-[600ms] group-data-[active=true]:opacity-100"
+                      >
+                        <rect width="18" height="18" x="3" y="3" rx="2" />
+                        <path d="M7 7h10" />
+                        <path d="M7 12h10" />
+                        <path d="M7 17h10" />
+                      </svg>
 
-                <div className="flex flex-wrap gap-2">
-                  {exp.technologies.map((tech, i) => (
-                    <span key={i} className="tech-tag">
-                      {tech}
+                      {/* Title */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm md:text-base font-medium text-slate-100 truncate group-data-[active=true]:text-primary-400 transition-colors">
+                          {exp.title} <span className="text-slate-400">@</span>{" "}
+                          <span className="text-primary-400">
+                            {exp.company}
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Period */}
+                    <span className="text-xs md:text-sm text-slate-400 font-mono whitespace-nowrap">
+                      {exp.period}
                     </span>
-                  ))}
+                  </div>
+
+                  {/* Expandable Content */}
+                  <div
+                    className="overflow-hidden transition-all duration-[600ms] ease-out"
+                    style={{
+                      maxHeight: index === activeIndex ? "500px" : "0px",
+                      opacity: index === activeIndex ? 1 : 0,
+                    }}
+                  >
+                    <div className="pt-4 space-y-4">
+                      {/* Location */}
+                      <p className="text-sm text-slate-300 font-mono">
+                        📍 {exp.location}
+                      </p>
+
+                      {/* Description */}
+                      <p className="text-sm leading-relaxed text-slate-300">
+                        {exp.description}
+                      </p>
+
+                      {/* Tech Stack */}
+                      <div className="flex flex-wrap gap-2">
+                        {exp.technologies.map((tech, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1 bg-navy-900/80 border border-primary-400/30 
+                            rounded-full text-primary-400 text-xs font-mono"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
+        </div>
 
-          {/* Certifications */}
-          <motion.div
-            {...createAnimationProps(
-              {
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: { duration: 0.5, delay: 0.5 },
-              },
-              inView
-            )}
-            className="mb-12"
-          >
-            <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
-              <span className="text-primary-400 font-mono text-lg mr-2">►</span>
-              Certifications
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {certifications.map((cert, index) => (
-                <div key={index} className="card flex items-start gap-3">
-                  <span className="text-2xl">{cert.icon}</span>
-                  <div>
-                    <p className="text-slate-100 font-medium">{cert.name}</p>
-                    <p className="text-slate-400 text-sm font-mono">
-                      {cert.date}
-                    </p>
-                  </div>
+        {/* Certifications */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="max-w-4xl mx-auto mb-12"
+        >
+          <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
+            <span className="text-primary-400 font-mono text-lg mr-2">►</span>
+            Certifications
+          </h3>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {certifications.map((cert, index) => (
+              <div
+                key={index}
+                className="card flex flex-col items-start gap-2 hover:border-primary-400/50 transition-colors"
+              >
+                <span className="text-2xl">{cert.icon}</span>
+                <div>
+                  <p className="text-slate-100 font-medium text-sm">
+                    {cert.name}
+                  </p>
+                  <p className="text-slate-400 text-xs font-mono">
+                    {cert.date}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </motion.div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
-          {/* Education */}
-          <motion.div
-            {...createAnimationProps(
-              {
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0 },
-                transition: { duration: 0.5, delay: 0.6 },
-              },
-              inView
-            )}
-            className="mb-12"
-          >
-            <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
-              <span className="text-primary-400 font-mono text-lg mr-2">►</span>
-              Education
-            </h3>
-            <div className="space-y-4">
-              <div className="card">
-                <h4 className="text-slate-100 font-medium mb-2">
-                  Software and App Development Course
-                </h4>
-                <p className="text-primary-400 font-mono text-sm mb-2">
-                  Accademia Informatica | December 2018 - June 2019
-                </p>
-                <p className="text-slate-300 text-sm mb-3">
-                  800-hour intensive course covering full-stack web and mobile
-                  development
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {educationTechnologies.map((tech, i) => (
+        {/* Education */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="max-w-4xl mx-auto mb-12"
+        >
+          <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
+            <span className="text-primary-400 font-mono text-lg mr-2">►</span>
+            Education
+          </h3>
+          <div className="space-y-4">
+            <div className="card hover:border-primary-400/50 transition-colors">
+              <h4 className="text-slate-100 font-medium mb-2">
+                Software and App Development Course
+              </h4>
+              <p className="text-primary-400 font-mono text-sm mb-2">
+                Accademia Informatica | December 2018 - June 2019
+              </p>
+              <p className="text-slate-300 text-sm mb-3">
+                800-hour intensive course covering full-stack web and mobile
+                development
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Java SE/EE", "Spring Boot", "Angular", "TypeScript"].map(
+                  (tech, i) => (
                     <span key={i} className="tech-tag text-xs">
                       {tech}
                     </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="card">
-                <h4 className="text-slate-100 font-medium mb-2">
-                  Bachelor's Degree in Political Science
-                </h4>
-                <p className="text-primary-400 font-mono text-sm">
-                  La Sapienza University, Rome | 2010 - 2014
-                </p>
+                  )
+                )}
               </div>
             </div>
-          </motion.div>
 
-          {/* Download Resume Button */}
-          <div className="text-center">
-            <a
-              href="/CV-Nanni-ENG.pdf"
-              download
-              className="btn-primary inline-block"
-            >
-              Download Full Resume
-            </a>
+            <div className="card hover:border-primary-400/50 transition-colors">
+              <h4 className="text-slate-100 font-medium mb-2">
+                Bachelor's Degree in Political Science
+              </h4>
+              <p className="text-primary-400 font-mono text-sm">
+                La Sapienza University, Rome | 2010 - 2014
+              </p>
+            </div>
           </div>
+        </motion.div>
+
+        {/* Download Resume Button */}
+        <div className="text-center">
+          <a
+            href="/CV-Nanni-Software-Dev.pdf"
+            download
+            className="btn-primary inline-block"
+          >
+            Download Full Resume
+          </a>
         </div>
       </motion.div>
     </section>
