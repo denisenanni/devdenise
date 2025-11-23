@@ -1,8 +1,16 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { fadeInUp, createAnimationProps } from "../utils/animations";
 
-const technologies = ["React", "TypeScript", "JavaScript", "Tailwind CSS", "Vite", "Git"];
+const technologies = [
+  "React",
+  "TypeScript",
+  "JavaScript",
+  "Tailwind CSS",
+  "Vite",
+  "Git",
+  "Docker",
+  "Terraform",
+];
 
 const About = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
@@ -14,10 +22,12 @@ const About = () => {
       className="section bg-navy-900 overflow-x-hidden"
     >
       <motion.div
-        {...createAnimationProps(fadeInUp, inView)}
+        initial={{ opacity: 0, y: 50 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8 }}
         className="section-content"
       >
-        <div className="flex items-center mb-12 min-w-0">
+        <div className="flex items-center mb-8 md:mb-12 min-w-0">
           <span className="section-number">02.</span>
           <h2 className="section-title">About Me</h2>
           <div className="section-divider"></div>
@@ -36,7 +46,9 @@ const About = () => {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-slate-100 font-mono text-lg mb-4">Technologies I work with:</h3>
+            <h3 className="text-slate-100 font-mono text-lg mb-4">
+              Technologies I work with:
+            </h3>
             <div className="grid grid-cols-2 gap-2">
               {technologies.map((tech) => (
                 <div key={tech} className="flex items-center text-slate-300">

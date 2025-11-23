@@ -91,7 +91,7 @@ const Resume = () => {
         </div>
 
         {/* Interactive Experience Cards */}
-        <div className="max-w-4xl mx-auto max-w-4xl mx-auto mb-12">
+        <div className="mx-auto mx-auto mb-12">
           <div className="space-y-2">
             {experiences.map((exp, index) => (
               <div
@@ -155,7 +155,7 @@ const Resume = () => {
                       {/* Title */}
                       <div className="flex-1 min-w-0 overflow-hidden">
                         <h3 className="text-xs md:text-base font-medium text-slate-100 truncate group-data-[active=true]:text-primary-400 transition-colors">
-                          {exp.title} <span className="text-slate-400">@</span>{" "}
+                          {exp.title} <span className="text-slate-400">@</span>
                           <span className="text-primary-400">
                             {exp.company}
                           </span>
@@ -164,7 +164,7 @@ const Resume = () => {
                     </div>
 
                     {/* Period */}
-                    <span className="text-[10px] md:text-sm text-slate-400 font-mono whitespace-nowrap flex-shrink-0">
+                    <span className="text-[10px] md:text-sm text-slate-100 font-mono whitespace-nowrap flex-shrink-0">
                       {exp.period}
                     </span>
                   </div>
@@ -213,7 +213,7 @@ const Resume = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="max-w-4xl mx-auto mb-12"
+          className="mx-auto mb-12"
         >
           <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
             <span className="text-primary-400 font-mono text-lg mr-2">►</span>
@@ -244,7 +244,7 @@ const Resume = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="max-w-4xl mx-auto mb-12"
+          className="mx-auto mb-12"
         >
           <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
             <span className="text-primary-400 font-mono text-lg mr-2">►</span>

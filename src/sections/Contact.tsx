@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { fadeInUp, createAnimationProps } from "../utils/animations";
 
 const Contact = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
@@ -14,63 +13,73 @@ const Contact = () => {
     "idle" | "sending" | "success" | "error"
   >("idle");
 
-  const handleChange = useCallback((
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }, []);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    },
+    []
+  );
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    // Simple validation
-    if (!formData.name || !formData.email || !formData.message) {
-      alert("Please fill in all fields.");
-      return;
-    }
+      // Simple validation
+      if (!formData.name || !formData.email || !formData.message) {
+        alert("Please fill in all fields.");
+        return;
+      }
 
-    setStatus("sending");
+      setStatus("sending");
 
-    try {
-      const response = await fetch(
-        "https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec", // replace with your script URL
-        {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
+      try {
+        const response = await fetch(
+          "https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec", // replace with your script URL
+          {
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          setStatus("success");
+          setFormData({ name: "", email: "", message: "" });
+        } else {
+          setStatus("error");
         }
-      );
-
-      if (response.ok) {
-        setStatus("success");
-        setFormData({ name: "", email: "", message: "" });
-      } else {
+      } catch (err) {
+        console.error(err);
         setStatus("error");
       }
-    } catch (err) {
-      console.error(err);
-      setStatus("error");
-    }
-  }, [formData]);
+    },
+    [formData]
+  );
 
   return (
-    <section id="contact" ref={ref} className="section bg-navy-900 overflow-x-hidden">
+    <section
+      id="contact"
+      ref={ref}
+      className="section bg-navy-900 overflow-x-hidden"
+    >
       <motion.div
-        {...createAnimationProps(fadeInUp, inView)}
+        initial={{ opacity: 0, y: 50 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8 }}
         className="section-content"
       >
-        <div className="flex items-center mb-12 min-w-0">
+        <div className="flex items-center mb-8 md:mb-12 min-w-0">
           <span className="section-number">05.</span>
           <h2 className="section-title">Get In Touch</h2>
           <div className="section-divider"></div>
         </div>
 
-        <div className="max-w-2xl mx-auto">
+        <div className="mx-auto">
           <p className="text-slate-200 text-center mb-12">
-            I'm currently looking for new opportunities. Whether you have a question
-            or just want to say hi, feel free to reach out!
+            I'm currently looking for new opportunities. Whether you have a
+            question or just want to say hi, feel free to reach out!
           </p>
 
           <form onSubmit={handleSubmit} className="card space-y-6">

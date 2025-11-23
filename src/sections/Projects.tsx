@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProjectCard from "../components/ProjectCard";
-import { fadeInUp, createAnimationProps } from "../utils/animations";
 
 const projects = [
   {
@@ -35,9 +34,13 @@ const Projects = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
-    <section id="projects" ref={ref} className="section bg-navy-900 overflow-x-hidden">
+    <section
+      id="projects"
+      ref={ref}
+      className="section bg-navy-900 overflow-x-hidden"
+    >
       <div className="section-content">
-        <div className="flex items-center mb-12 min-w-0">
+        <div className="flex items-center mb-8 md:mb-12 min-w-0">
           <span className="section-number">03.</span>
           <h2 className="section-title">Things I've Built</h2>
           <div className="section-divider"></div>
@@ -47,13 +50,9 @@ const Projects = () => {
           {projects.map((project, index) => (
             <motion.div
               key={project.title}
-              {...createAnimationProps(
-                {
-                  ...fadeInUp,
-                  transition: { ...fadeInUp.transition, delay: index * 0.2 },
-                },
-                inView
-              )}
+              initial={{ opacity: 0, y: 50 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: index * 0.2 }}
             >
               <ProjectCard
                 title={project.title}
