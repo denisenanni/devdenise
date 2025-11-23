@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProjectCard from "../components/ProjectCard";
+import BehindTheScenesButton from "../components/BehindTheScenesButton";
 
 const projects = [
   {
@@ -40,6 +41,7 @@ const Projects = () => {
       className="section bg-navy-900 overflow-x-hidden"
     >
       <div className="section-content">
+        <BehindTheScenesButton />
         <div className="flex items-center mb-8 md:mb-12 min-w-0">
           <span className="section-number">03.</span>
           <h2 className="section-title">Things I've Built</h2>
