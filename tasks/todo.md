@@ -238,3 +238,113 @@ Successfully replaced Mermaid with D3.js to create a custom pipeline diagram com
 
 ### Files Unchanged (but now unused)
 - `src/utils/animations.ts` - No longer imported anywhere (can optionally be removed)
+
+---
+
+# GitHub Pages Deployment Setup
+
+## Tasks
+- [x] Update vite.config.ts with base path for GitHub Pages
+- [x] Create GitHub Actions workflow file for deployment
+- [x] Test the workflow configuration
+
+## Review
+
+### Summary of Changes
+
+Successfully configured GitHub Pages deployment with automated GitHub Actions workflow. The project will now automatically build and deploy to GitHub Pages whenever changes are pushed to the main branch.
+
+### Detailed Changes
+
+#### 1. Updated vite.config.ts (vite.config.ts:7)
+
+**Changes:**
+- Added `base: '/devdenise/'` configuration
+- This ensures all asset paths include the repository name prefix
+- Required for GitHub Pages which serves from `https://username.github.io/repo-name/`
+
+**Before:**
+```typescript
+export default defineConfig({
+  plugins: [react()],
+})
+```
+
+**After:**
+```typescript
+export default defineConfig({
+  plugins: [react()],
+  base: '/devdenise/',
+})
+```
+
+#### 2. Created GitHub Actions Workflow (.github/workflows/deploy.yml)
+
+**New automated deployment pipeline:**
+- Triggers on every push to `main` branch
+- Uses Node.js 22.12.0 (matching package.json engines requirement)
+- Enables Corepack for proper yarn support
+- Installs dependencies with `yarn install --frozen-lockfile`
+- Builds project with `yarn build`
+- Deploys `dist` folder to GitHub Pages
+
+**Workflow features:**
+- Two-job pipeline: `build` and `deploy`
+- Proper permissions: `contents: read`, `pages: write`, `id-token: write`
+- Concurrency control to prevent overlapping deployments
+- Uses latest GitHub Actions: `@v4` for checkout/setup, `@v3` for pages upload
+
+### Testing Results
+
+✅ **Local build successful** - Built in 3.36s with no errors
+✅ **Base path verified** - All assets correctly reference `/devdenise/` prefix
+✅ **Bundle size optimized** - Main bundle: 256.50 kB (gzip: 84.86 kB)
+✅ **TypeScript compilation clean** - No type errors
+✅ **Workflow file valid** - Proper YAML syntax and GitHub Actions format
+
+### Next Steps
+
+To complete the deployment setup, you need to:
+
+1. **Push changes to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Add GitHub Pages deployment workflow"
+   git push
+   ```
+
+2. **Enable GitHub Pages in repository settings:**
+   - Go to https://github.com/denisenanni/devdenise/settings/pages
+   - Under "Build and deployment" → "Source"
+   - Select "GitHub Actions"
+   - The workflow will automatically deploy on the next push
+
+3. **Access your deployed site:**
+   - URL: https://denisenanni.github.io/devdenise/
+   - First deployment takes 2-3 minutes
+   - Subsequent deployments are faster
+
+### Security Analysis
+
+✅ **No vulnerabilities introduced**
+- Workflow uses official GitHub Actions from trusted sources
+- Proper permission scoping (minimal required permissions)
+- No secrets or sensitive data in workflow file
+- Uses `--frozen-lockfile` to prevent dependency tampering
+- All actions pinned to major versions for stability
+- Read-only access to repository contents
+- Write access limited to Pages deployment only
+
+✅ **Best practices followed**
+- Concurrency control prevents race conditions
+- Proper job dependencies (`deploy` needs `build`)
+- Environment-specific deployment configuration
+- Node version matches project requirements
+- Immutable builds with frozen lockfile
+
+### Files Modified
+1. `vite.config.ts` - Added base path for GitHub Pages
+2. `.github/workflows/deploy.yml` - New deployment workflow (created)
+
+### Deployment URL
+https://denisenanni.github.io/devdenise/

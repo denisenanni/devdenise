@@ -24,18 +24,22 @@ export const PipelineDiagram = () => {
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3.select(svgRef.current);
-    const width = 700;
-    const height = 200;
+    const width = 900;
+    const height = 260;
 
-    svg.attr("viewBox", `0 0 ${width} ${height}`).attr("preserveAspectRatio", "xMidYMid meet");
+    svg
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
 
     // Define nodes data
     const nodes: Node[] = [
-      { id: 1, label: "Local Dev:\nReact + Vite", x: 70, y: 100 },
-      { id: 2, label: "GitHub Actions\nBuild", x: 240, y: 100 },
-      { id: 3, label: "Static Site\n(dist)", x: 410, y: 100 },
-      { id: 4, label: "GitHub Pages\nDeployment", x: 580, y: 100 },
-      { id: 5, label: "Optional:\nDocker Container", x: 240, y: 170 },
+      { id: 1, label: "Local Dev:\nReact + Vite", x: 70, y: 80 },
+      { id: 2, label: "Git Push\nto Main", x: 200, y: 80 },
+      { id: 3, label: "GitHub Actions\nBuild", x: 330, y: 80 },
+      { id: 4, label: "Static Site\n(dist)", x: 460, y: 80 },
+      { id: 5, label: "Deploy to\ngh-pages", x: 590, y: 80 },
+      { id: 6, label: "GitHub Pages\nLive Site", x: 720, y: 80 },
+      { id: 7, label: "Optional:\nDocker Container", x: 330, y: 180 },
     ];
 
     // Define edges data
@@ -43,7 +47,9 @@ export const PipelineDiagram = () => {
       { source: nodes[0], target: nodes[1], dashed: false },
       { source: nodes[1], target: nodes[2], dashed: false },
       { source: nodes[2], target: nodes[3], dashed: false },
-      { source: nodes[1], target: nodes[4], dashed: true },
+      { source: nodes[3], target: nodes[4], dashed: false },
+      { source: nodes[4], target: nodes[5], dashed: false },
+      { source: nodes[2], target: nodes[6], dashed: true },
     ];
 
     // Create arrow marker
@@ -103,13 +109,23 @@ export const PipelineDiagram = () => {
     // Add text labels
     nodeElements.each(function (d: Node) {
       const lines = d.label.split("\n");
-      const textElement = d3.select(this).append("text").attr("text-anchor", "middle").attr("fill", "#ffffff").attr("font-size", "12px").attr("font-weight", "500");
+      const textElement = d3
+        .select(this)
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("fill", "#ffffff")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500");
 
       if (lines.length === 1) {
         textElement.attr("dy", "0.35em").text(lines[0]);
       } else {
         lines.forEach((line: string, i: number) => {
-          textElement.append("tspan").attr("x", 0).attr("dy", i === 0 ? "-0.3em" : "1.2em").text(line);
+          textElement
+            .append("tspan")
+            .attr("x", 0)
+            .attr("dy", i === 0 ? "-0.3em" : "1.2em")
+            .text(line);
         });
       }
     });
@@ -117,7 +133,11 @@ export const PipelineDiagram = () => {
 
   return (
     <div className="w-full flex items-center justify-center">
-      <svg ref={svgRef} className="w-full max-w-full h-auto" style={{ maxHeight: "250px" }} />
+      <svg
+        ref={svgRef}
+        className="w-full max-w-full h-auto"
+        style={{ maxHeight: "250px" }}
+      />
     </div>
   );
 };
