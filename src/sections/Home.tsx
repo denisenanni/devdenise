@@ -9,7 +9,7 @@ const Home = () => {
     <section
       id="home"
       ref={ref}
-      className="section bg-navy-900"
+      className="section bg-navy-900 overflow-x-hidden"
     >
       <motion.div
         {...createAnimationProps(fadeInDown, inView)}

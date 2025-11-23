@@ -56,7 +56,7 @@ const Contact = () => {
   }, [formData]);
 
   return (
-    <section id="contact" ref={ref} className="section bg-navy-900">
+    <section id="contact" ref={ref} className="section bg-navy-900 overflow-x-hidden">
       <motion.div
         {...createAnimationProps(fadeInUp, inView)}
         className="section-content"

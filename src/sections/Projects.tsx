@@ -35,7 +35,7 @@ const Projects = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
-    <section id="projects" ref={ref} className="section bg-navy-900">
+    <section id="projects" ref={ref} className="section bg-navy-900 overflow-x-hidden">
       <div className="section-content">
         <div className="flex items-center mb-12 min-w-0">
           <span className="section-number">03.</span>
