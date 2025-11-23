@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useState } from "react";
 
-const experiences = [
+const experiences = Object.freeze([
   {
     title: "Front-end/Full Stack Engineer",
     company: "Outmatic",
@@ -43,9 +43,9 @@ const experiences = [
     technologies: ["Java 6/7", "AngularJS", "Angular 7+"],
     gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", // Green-Cyan
   },
-];
+]);
 
-const certifications = [
+const certifications = Object.freeze([
   {
     name: "Google Professional Cloud DevOps Engineer",
     date: "November 2022",
@@ -61,7 +61,7 @@ const certifications = [
     date: "June 2020",
     icon: "☕",
   },
-];
+]);
 
 const Resume = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });

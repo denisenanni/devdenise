@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import * as d3 from "d3";
 
 type Node = {
@@ -14,11 +14,12 @@ type Edge = {
   dashed: boolean;
 };
 
-export const PipelineDiagram = () => {
+export const PipelineDiagram = memo(() => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || isRendered) return;
 
     // Clear any existing content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -129,7 +130,9 @@ export const PipelineDiagram = () => {
         });
       }
     });
-  }, []);
+
+    setIsRendered(true);
+  }, [isRendered]);
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -140,4 +143,4 @@ export const PipelineDiagram = () => {
       />
     </div>
   );
-};
+});

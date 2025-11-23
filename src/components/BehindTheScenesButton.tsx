@@ -1,6 +1,11 @@
-import { useState } from "react";
-import { BehindTheScenesModal } from "./BehindTheScenesModal";
+import { useState, lazy, Suspense } from "react";
 import { Wrench } from "lucide-react";
+
+const BehindTheScenesModal = lazy(() =>
+  import("./BehindTheScenesModal").then((module) => ({
+    default: module.BehindTheScenesModal,
+  }))
+);
 
 export default function BehindTheScenesButton() {
   const [open, setOpen] = useState(false);
@@ -14,7 +19,11 @@ export default function BehindTheScenesButton() {
         <Wrench size={22} />
       </button>
 
-      <BehindTheScenesModal isOpen={open} onClose={() => setOpen(false)} />
+      {open && (
+        <Suspense fallback={null}>
+          <BehindTheScenesModal isOpen={open} onClose={() => setOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

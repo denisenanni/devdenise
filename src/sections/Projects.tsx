@@ -3,7 +3,7 @@ import { useInView } from "react-intersection-observer";
 import ProjectCard from "../components/ProjectCard";
 import BehindTheScenesButton from "../components/BehindTheScenesButton";
 
-const projects = [
+const projects = Object.freeze([
   {
     title: "COVID Stats App",
     description:
@@ -29,7 +29,7 @@ const projects = [
     demo: "https://leaderclinique.fr",
     image: "/assets/leaderclinique.png",
   },
-];
+]);
 
 const Projects = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });

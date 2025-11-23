@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
-const technologies = [
+const technologies = Object.freeze([
   "React",
   "TypeScript",
   "JavaScript",
@@ -10,7 +10,7 @@ const technologies = [
   "Git",
   "Docker",
   "Terraform",
-];
+]);
 
 const About = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
