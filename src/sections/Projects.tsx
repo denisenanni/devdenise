@@ -37,7 +37,7 @@ const Projects = () => {
   return (
     <section id="projects" ref={ref} className="section bg-navy-900">
       <div className="section-content">
-        <div className="flex items-center mb-12">
+        <div className="flex items-center mb-12 min-w-0">
           <span className="section-number">03.</span>
           <h2 className="section-title">Things I've Built</h2>
           <div className="section-divider"></div>

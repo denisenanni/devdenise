@@ -17,13 +17,13 @@ const About = () => {
         {...createAnimationProps(fadeInUp, inView)}
         className="section-content"
       >
-        <div className="flex items-center mb-12">
+        <div className="flex items-center mb-12 min-w-0">
           <span className="section-number">02.</span>
           <h2 className="section-title">About Me</h2>
           <div className="section-divider"></div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-12">
           <div className="space-y-4 text-slate-200">
             <p>
               Hello! I'm Denise, a frontend engineer passionate about creating

@@ -20,7 +20,7 @@ const ProjectCard: React.FC<ProjectCardProps> = memo(({
 }) => {
   return (
     <div className="project-card group">
-      <div className="grid md:grid-cols-2 gap-8 items-center">
+      <div className="grid md:grid-cols-2 gap-4 md:gap-8 items-center">
         {/* Project Image */}
         {image && (
           <div className="project-image relative">

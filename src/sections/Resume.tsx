@@ -106,7 +106,7 @@ const Resume = () => {
         className="section-content"
       >
         {/* Header */}
-        <div className="flex items-center mb-12">
+        <div className="flex items-center mb-12 min-w-0">
           <span className="section-number">04.</span>
           <h2 className="section-title">Experience</h2>
           <div className="section-divider"></div>

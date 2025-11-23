@@ -61,7 +61,7 @@ const Contact = () => {
         {...createAnimationProps(fadeInUp, inView)}
         className="section-content"
       >
-        <div className="flex items-center mb-12">
+        <div className="flex items-center mb-12 min-w-0">
           <span className="section-number">05.</span>
           <h2 className="section-title">Get In Touch</h2>
           <div className="section-divider"></div>
