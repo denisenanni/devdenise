@@ -72,7 +72,11 @@ const Resume = () => {
   };
 
   return (
-    <section id="resume" ref={ref} className="section bg-navy-900 overflow-x-hidden">
+    <section
+      id="resume"
+      ref={ref}
+      className="section bg-navy-900 overflow-x-hidden"
+    >
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -87,7 +91,7 @@ const Resume = () => {
         </div>
 
         {/* Interactive Experience Cards */}
-        <div className="max-w-4xl mx-auto mb-16">
+        <div className="max-w-4xl mx-auto max-w-4xl mx-auto mb-12">
           <div className="space-y-2">
             {experiences.map((exp, index) => (
               <div
@@ -126,10 +130,10 @@ const Resume = () => {
                 />
 
                 {/* Content */}
-                <div className="relative p-4 md:p-5">
+                <div className="relative py-3 md:p-5">
                   {/* Always Visible: Role, Company, Period */}
-                  <div className="flex items-center justify-between gap-4 min-h-[28px]">
-                    <div className="flex-1 flex items-center gap-3 md:gap-4">
+                  <div className="flex items-center justify-between gap-2 md:gap-4 min-h-[28px] min-w-0">
+                    <div className="flex-1 flex items-center gap-2 md:gap-4 min-w-0 overflow-hidden">
                       {/* Icon */}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -149,8 +153,8 @@ const Resume = () => {
                       </svg>
 
                       {/* Title */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm md:text-base font-medium text-slate-100 truncate group-data-[active=true]:text-primary-400 transition-colors">
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <h3 className="text-xs md:text-base font-medium text-slate-100 truncate group-data-[active=true]:text-primary-400 transition-colors">
                           {exp.title} <span className="text-slate-400">@</span>{" "}
                           <span className="text-primary-400">
                             {exp.company}
@@ -160,7 +164,7 @@ const Resume = () => {
                     </div>
 
                     {/* Period */}
-                    <span className="text-xs md:text-sm text-slate-400 font-mono whitespace-nowrap">
+                    <span className="text-[10px] md:text-sm text-slate-400 font-mono whitespace-nowrap flex-shrink-0">
                       {exp.period}
                     </span>
                   </div>
