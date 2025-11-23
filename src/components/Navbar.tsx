@@ -41,7 +41,7 @@ const Navbar = memo(() => {
   }, [isMobileMenuOpen, closeMobileMenu]);
 
   return (
-    <nav className="fixed top-0 w-full glass border-b border-slate-400/20 z-50 animate-slide-down">
+    <nav className="fixed top-0 w-full bg-navy-900/95 backdrop-blur-md border-b border-slate-400/20 z-50 animate-slide-down">
       <div className="max-w-6xl mx-auto px-6">
         {/* Desktop Navigation */}
         <ul className="hidden md:flex justify-center md:justify-end space-x-8 py-6">
@@ -60,7 +60,7 @@ const Navbar = memo(() => {
         </ul>
 
         {/* Mobile Hamburger Button */}
-        <div className="flex md:hidden justify-end py-6">
+        <div className="flex md:hidden justify-end py-6 relative z-[60]">
           <button
             onClick={toggleMobileMenu}
             className="relative w-8 h-8 flex flex-col justify-center items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-primary-400 rounded"
@@ -68,7 +68,9 @@ const Navbar = memo(() => {
             aria-expanded={isMobileMenuOpen}
           >
             <motion.span
-              animate={isMobileMenuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+              animate={
+                isMobileMenuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }
+              }
               className="w-6 h-0.5 bg-primary-400 transition-all"
             />
             <motion.span
@@ -76,7 +78,9 @@ const Navbar = memo(() => {
               className="w-6 h-0.5 bg-primary-400 transition-all"
             />
             <motion.span
-              animate={isMobileMenuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+              animate={
+                isMobileMenuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }
+              }
               className="w-6 h-0.5 bg-primary-400 transition-all"
             />
           </button>
@@ -93,7 +97,7 @@ const Navbar = memo(() => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closeMobileMenu}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden"
               aria-hidden="true"
             />
 
@@ -103,10 +107,10 @@ const Navbar = memo(() => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-navy-900/95 backdrop-blur-md border-l border-slate-400/20 z-50 md:hidden shadow-2xl"
+              className="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-navy-900 border-l border-slate-400/20 z-[55] md:hidden shadow-2xl"
             >
-              <div className="flex flex-col h-full pt-20 px-8">
-                <nav aria-label="Mobile navigation">
+              <div className="flex flex-col h-full pt-20 bg-navy-900">
+                <nav aria-label="Mobile navigation" className="bg-navy-900">
                   <ul className="flex flex-col space-y-8">
                     {links.map((link, index) => (
                       <motion.li
