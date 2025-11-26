@@ -78,18 +78,6 @@ jobs:
       - uses: actions/deploy-pages@v4`}
                 />
 
-                {/* OPTIONAL DOCKER */}
-                <Section
-                  icon={<Terminal className="text-yellow-400" size={22} />}
-                  title="Optional Docker"
-                  description="The project can optionally be containerized for consistent local development or future backend expansion, but this is not required for deployment to GitHub Pages."
-                  code={`FROM node:22
-WORKDIR /app
-COPY . .
-RUN yarn install
-CMD ["yarn", "dev"]`}
-                />
-
                 {/* PIPELINE DIAGRAM */}
                 <Section
                   icon={<Workflow className="text-cyan-400" size={22} />}
