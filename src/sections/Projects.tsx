@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ProjectCard from "../components/ProjectCard";
-import BehindTheScenesButton from "../components/BehindTheScenesButton";
 
 const projects = Object.freeze([
   {
