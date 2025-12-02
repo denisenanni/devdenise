@@ -82,7 +82,7 @@ jobs:
                 <Section
                   icon={<Workflow className="text-cyan-400" size={22} />}
                   title="Pipeline Diagram"
-                  description="Visual overview of the build and deployment process, including optional Docker usage."
+                  description="Visual overview of the build and deployment process."
                 />
                 <div className="bg-neutral-800 p-4 rounded-lg border border-neutral-700 overflow-x-auto">
                   <PipelineDiagram />

@@ -130,7 +130,7 @@ const Resume = () => {
                 />
 
                 {/* Content */}
-                <div className="relative py-3 md:p-5">
+                <div className="relative py-3 md:p-5 p-2">
                   {/* Always Visible: Role, Company, Period */}
                   <div className="flex items-center justify-between gap-2 md:gap-4 min-h-[28px] min-w-0">
                     <div className="flex-1 flex items-center gap-2 md:gap-4 min-w-0 overflow-hidden">

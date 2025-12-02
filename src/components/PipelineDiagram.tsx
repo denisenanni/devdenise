@@ -1,11 +1,16 @@
-import { useEffect, useRef, useState, memo } from "react";
-import * as d3 from "d3";
+import { useEffect, useRef, memo } from "react";
+import { select } from "d3-selection";
+import "d3-transition";
+import { easeLinear } from "d3-ease";
+import { SiGit, SiNodedotjs, SiYarn, SiVite, SiGithub } from "react-icons/si";
+import { FaCodeBranch, FaCloudUploadAlt, FaGlobe } from "react-icons/fa";
 
 type Node = {
   id: number;
   label: string;
   x: number;
   y: number;
+  icon: string;
 };
 
 type Edge = {
@@ -14,47 +19,76 @@ type Edge = {
   dashed: boolean;
 };
 
+// Icon mapping
+const iconMap: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
+  git: SiGit,
+  code: FaCodeBranch,
+  node: SiNodedotjs,
+  yarn: SiYarn,
+  vite: SiVite,
+  upload: FaCloudUploadAlt,
+  github: SiGithub,
+  globe: FaGlobe,
+};
+
+// Define steps and positions outside component (static data)
+const padding = 100;
+const nodeSpacingX = 240;
+const nodeSpacingY = 160;
+
+const steps = [
+  { label: "Git Push", icon: "git" },
+  { label: "Checkout Code", icon: "code" },
+  { label: "Setup Node", icon: "node" },
+  { label: "Install Deps", icon: "yarn" },
+  { label: "Build", icon: "vite" },
+  { label: "Upload Artifact", icon: "upload" },
+  { label: "Deploy", icon: "github" },
+  { label: "Live Site", icon: "globe" },
+];
+
+// Square layout: 2 blocks on each side, empty center
+const positions = [
+  { x: padding + nodeSpacingX * 0.5, y: padding }, // Git Push (top left)
+  { x: padding + nodeSpacingX * 1.5, y: padding }, // Checkout (top right)
+  { x: padding + nodeSpacingX * 2, y: padding + nodeSpacingY * 0.5 }, // Setup Node (right top)
+  { x: padding + nodeSpacingX * 2, y: padding + nodeSpacingY * 1.5 }, // Install Deps (right bottom)
+  { x: padding + nodeSpacingX * 1.5, y: padding + nodeSpacingY * 2 }, // Build (bottom right)
+  { x: padding + nodeSpacingX * 0.5, y: padding + nodeSpacingY * 2 }, // Upload (bottom left)
+  { x: padding, y: padding + nodeSpacingY * 1.5 }, // Deploy (left bottom)
+  { x: padding, y: padding + nodeSpacingY * 0.5 }, // Live Site (left top)
+];
+
 export const PipelineDiagram = memo(() => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [isRendered, setIsRendered] = useState(false);
+  const intervalsRef = useRef<{ loop: number | null }>({
+    loop: null,
+  });
 
   useEffect(() => {
-    if (!svgRef.current || isRendered) return;
+    if (!svgRef.current) return;
 
     // Clear any existing content
-    d3.select(svgRef.current).selectAll("*").remove();
+    select(svgRef.current).selectAll("*").remove();
 
-    const svg = d3.select(svgRef.current);
+    const svg = select(svgRef.current);
     const width = 800;
     const height = 600;
+
+    // Capture ref values for cleanup function
+    const svgElement = svgRef.current;
+    const intervals = intervalsRef.current;
 
     svg
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    // Define nodes in circular layout - matching actual deploy.yml workflow
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const radius = 240;
-    const angleStep = (2 * Math.PI) / 8;
-    const startAngle = -Math.PI / 2; // Start at top
-
-    const labels = [
-      "Git Push\nto Main",
-      "Checkout\nCode",
-      "Setup Node\n& Corepack",
-      "Install Deps\n(yarn)",
-      "Build\n(Vite)",
-      "Upload\nArtifact",
-      "Deploy to\nGH Pages",
-      "Live Site",
-    ];
-
-    const nodes: Node[] = labels.map((label, i) => ({
+    const nodes: Node[] = steps.map((step, i) => ({
       id: i + 1,
-      label,
-      x: centerX + radius * Math.cos(startAngle + i * angleStep),
-      y: centerY + radius * Math.sin(startAngle + i * angleStep),
+      label: step.label,
+      icon: step.icon,
+      x: positions[i].x,
+      y: positions[i].y,
     }));
 
     // Define edges data
@@ -68,85 +102,51 @@ export const PipelineDiagram = memo(() => {
       { source: nodes[6], target: nodes[7], dashed: false },
     ];
 
-    // Create arrow marker
-    svg
-      .append("defs")
-      .append("marker")
-      .attr("id", "arrowhead")
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 8)
-      .attr("refY", 0)
-      .attr("markerWidth", 6)
-      .attr("markerHeight", 6)
-      .attr("orient", "auto")
-      .append("path")
-      .attr("d", "M0,-5L10,0L0,5")
-      .attr("fill", "#60a5fa");
-
-    // Draw edges as curved arcs
+    // Draw edges as polylines with angles
     const edgeGroup = svg.append("g");
 
+    // Icon circle dimensions (icon is in a circle now, not rectangle)
+    const iconRadius = 40; // Radius of the circular icon container
+
+    // Helper function to get connection point on circle edge
+    const getConnectionPoint = (node: Node, targetNode: Node) => {
+      const dx = targetNode.x - node.x;
+      const dy = targetNode.y - node.y;
+      const angle = Math.atan2(dy, dx);
+
+      // Return point on circle perimeter in direction of target
+      return {
+        x: node.x + iconRadius * Math.cos(angle),
+        y: node.y + iconRadius * Math.sin(angle),
+      };
+    };
+
     const edgeLines = edgeGroup
-      .selectAll("path")
+      .selectAll("polyline")
       .data(edges)
       .enter()
-      .append("path")
-      .attr("d", (d) => {
-        // Calculate the angle and distance for the arc
+      .append("polyline")
+      .attr("points", (d) => {
+        const startPoint = getConnectionPoint(d.source, d.target);
+        const endPoint = getConnectionPoint(d.target, d.source);
+
+        // Determine if we need a corner
         const dx = d.target.x - d.source.x;
         const dy = d.target.y - d.source.y;
-        const angle = Math.atan2(dy, dx);
 
-        // Offset points with more spacing (70px from center instead of 60px)
-        const offset = 70;
-        const x1 = d.source.x + offset * Math.cos(angle);
-        const y1 = d.source.y + offset * Math.sin(angle);
-        const x2 = d.target.x - offset * Math.cos(angle);
-        const y2 = d.target.y - offset * Math.sin(angle);
-
-        // Calculate arc radius (distance between points)
-        const arcRadius = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
-        // Create an arc path (sweep-flag=1 for clockwise)
-        return `M ${x1},${y1} A ${arcRadius},${arcRadius} 0 0,1 ${x2},${y2}`;
+        if (Math.abs(dx) > 50 && Math.abs(dy) > 50) {
+          // Diagonal - add corner point
+          // Create L-shaped connection
+          return `${startPoint.x},${startPoint.y} ${endPoint.x},${startPoint.y} ${endPoint.x},${endPoint.y}`;
+        } else {
+          // Straight line
+          return `${startPoint.x},${startPoint.y} ${endPoint.x},${endPoint.y}`;
+        }
       })
       .attr("stroke", "#60a5fa")
       .attr("stroke-width", 2)
       .attr("fill", "none")
-      .attr("stroke-dasharray", (d) => (d.dashed ? "5,5" : "0"))
-      .attr("marker-end", "url(#arrowhead)")
-      .each(function (d) {
-        const path = d3.select(this);
-        const pathNode = this as SVGPathElement;
-        const length = pathNode.getTotalLength();
-
-        // Set initial dash offset for animation
-        if (!d.dashed) {
-          path
-            .attr("stroke-dasharray", `${length} ${length}`)
-            .attr("stroke-dashoffset", length);
-        }
-      });
-
-    // Animate stroke dash (drawing effect)
-    function animateEdges() {
-      const cycleDuration = 1200;
-      edgeLines.each(function (d, i) {
-        const path = d3.select(this);
-        if (!d.dashed) {
-          const pathNode = this as SVGPathElement;
-          const length = pathNode.getTotalLength();
-
-          path
-            .attr("stroke-dashoffset", length)
-            .transition()
-            .duration(600)
-            .delay(i * cycleDuration + 500) // Start after block appears
-            .ease(d3.easeCubicInOut)
-            .attr("stroke-dashoffset", 0);
-        }
-      });
-    }
+      .attr("opacity", 1);
 
     // Add traveling dots on edges
     const dotGroup = svg.append("g");
@@ -155,39 +155,38 @@ export const PipelineDiagram = memo(() => {
       // Clear existing dots
       dotGroup.selectAll("circle").remove();
 
-      // Get all path elements
-      const pathElements = edgeLines.nodes() as SVGPathElement[];
-      const cycleDuration = 1200;
+      const polylineElements = edgeLines.nodes() as SVGPolylineElement[];
+      const travelDuration = 1000; // Duration for dot to travel along one edge
 
       edges.forEach((edge, i) => {
         if (!edge.dashed) {
-          const pathElement = pathElements[i];
-          const pathLength = pathElement.getTotalLength();
+          const polylineElement = polylineElements[i];
+          const totalLength = polylineElement.getTotalLength();
 
           const dot = dotGroup
             .append("circle")
-            .attr("r", 4)
-            .attr("fill", "#64ffda")
+            .attr("r", 6)
+            .attr("fill", "#fbbf24")
             .style("opacity", 0);
 
-          // Animate dot along the curved path
+          // Animate dot along the polyline path
           dot
             .transition()
-            .delay(i * cycleDuration + 600) // Start shortly after arrow starts
+            .delay(i * travelDuration)
             .duration(0)
             .style("opacity", 1)
             .transition()
-            .duration(500)
-            .ease(d3.easeLinear)
+            .duration(travelDuration)
+            .ease(easeLinear)
             .attrTween("cx", () => {
               return (t: number) => {
-                const point = pathElement.getPointAtLength(t * pathLength);
+                const point = polylineElement.getPointAtLength(t * totalLength);
                 return String(point.x);
               };
             })
             .attrTween("cy", () => {
               return (t: number) => {
-                const point = pathElement.getPointAtLength(t * pathLength);
+                const point = polylineElement.getPointAtLength(t * totalLength);
                 return String(point.y);
               };
             })
@@ -199,113 +198,60 @@ export const PipelineDiagram = memo(() => {
       });
     }
 
-    // Add pulse effect to arrows
-    function pulseArrows() {
-      edgeLines
-        .filter((d) => !d.dashed)
-        .transition()
-        .duration(1000)
-        .ease(d3.easeSinInOut)
-        .attr("stroke-width", 3)
-        .attr("stroke-opacity", 1)
-        .transition()
-        .duration(1000)
-        .ease(d3.easeSinInOut)
-        .attr("stroke-width", 2)
-        .attr("stroke-opacity", 0.7);
-    }
-
-    // Draw nodes
-    const nodeGroup = svg.append("g");
-
-    const nodeElements = nodeGroup
-      .selectAll("g")
-      .data(nodes)
-      .enter()
-      .append("g")
-      .attr("transform", (d) => `translate(${d.x},${d.y})`)
-      .style("opacity", 0);
-
-    // Add rectangles for nodes
-    nodeElements
-      .append("rect")
-      .attr("x", -60)
-      .attr("y", -20)
-      .attr("width", 120)
-      .attr("height", 40)
-      .attr("rx", 6)
-      .attr("fill", "#3b82f6")
-      .attr("stroke", "#2563eb")
-      .attr("stroke-width", 2);
-
-    // Add text labels
-    nodeElements.each(function (d: Node) {
-      const lines = d.label.split("\n");
-      const textElement = d3
-        .select(this)
-        .append("text")
-        .attr("text-anchor", "middle")
-        .attr("fill", "#ffffff")
-        .attr("font-size", "12px")
-        .attr("font-weight", "500");
-
-      if (lines.length === 1) {
-        textElement.attr("dy", "0.35em").text(lines[0]);
-      } else {
-        lines.forEach((line: string, i: number) => {
-          textElement
-            .append("tspan")
-            .attr("x", 0)
-            .attr("dy", i === 0 ? "-0.3em" : "1.2em")
-            .text(line);
-        });
-      }
-    });
-
-    // Synchronized sequential animation: block → arrow → dot → next block
-    // Timing: Each cycle takes 1200ms (500ms block + 700ms arrow/dot)
-    const cycleDuration = 1200;
-
-    nodeElements
-      .transition()
-      .duration(500)
-      .delay((_d, i) => i * cycleDuration)
-      .ease(d3.easeCubicOut)
-      .style("opacity", 1);
-
-    // Start initial animations (start immediately with first block)
-    animateEdges();
+    // Nodes are now rendered as React components, not SVG
+    // Start initial dot animation
     animateDots();
 
-    // Loop animations (wait for full sequence to complete: 8 blocks × 1200ms)
-    const fullSequenceDuration = 8 * cycleDuration;
-    const loopInterval = setInterval(() => {
-      animateEdges();
+    // Loop dot animation continuously
+    intervalsRef.current.loop = setInterval(() => {
       animateDots();
-      pulseArrows();
-    }, fullSequenceDuration + 2000); // Add 2s pause before repeating
+    }, 7 * 1000 + 500); // 7 edges × 1000ms + 500ms pause
 
-    // Pulse arrows continuously
-    const pulseInterval = setInterval(() => {
-      pulseArrows();
-    }, 3000);
-
-    setIsRendered(true);
-
-    // Cleanup
+    // Cleanup function - stops all intervals and D3 transitions
     return () => {
-      clearInterval(loopInterval);
-      clearInterval(pulseInterval);
+      // Clear interval
+      if (intervals.loop) {
+        clearInterval(intervals.loop);
+        intervals.loop = null;
+      }
+
+      // Stop all D3 transitions to prevent animations from running after unmount
+      if (svgElement) {
+        select(svgElement).selectAll("*").interrupt();
+      }
     };
-  }, [isRendered]);
+  }, []);
 
   return (
-    <div className="w-full flex items-center justify-center">
+    <div className="w-full flex items-center justify-center relative">
       <svg
         ref={svgRef}
         className="w-full max-w-full h-auto"
         style={{ maxHeight: "600px" }}
       />
+      {/* Render icons as React components positioned over SVG */}
+      {steps.map((step, i) => {
+        const IconComponent = iconMap[step.icon];
+        const position = positions[i];
+        return (
+          <div
+            key={i}
+            className="absolute flex flex-col items-center"
+            style={{
+              left: `${(position.x / 800) * 100}%`,
+              top: `${(position.y / 600) * 100}%`,
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <div className="bg-blue-500 rounded-full p-4 flex items-center justify-center">
+              <IconComponent size={32} color="#ffffff" />
+            </div>
+            <span className="text-white text-xs mt-2 text-center whitespace-nowrap">
+              {step.label}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 });

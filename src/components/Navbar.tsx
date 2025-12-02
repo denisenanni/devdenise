@@ -111,7 +111,7 @@ const Navbar = memo(() => {
             >
               <div className="flex flex-col h-full pt-20 bg-navy-900">
                 <nav aria-label="Mobile navigation" className="bg-navy-900">
-                  <ul className="flex flex-col space-y-8">
+                  <ul className="flex flex-col space-y-8 p-4">
                     {links.map((link, index) => (
                       <motion.li
                         key={link}

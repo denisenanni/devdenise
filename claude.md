@@ -8,5 +8,6 @@
 8. Don't use 'any', build types for everything that's necessary.
 9. After writing the code, analyze it and confirm it follows security best practices, check that no sensitive data is left in the frontend, and that there are no vulnerabilities that an attacker could exploit.
 10. After finishing ask me if I want to be walked through the code you just wrote explaining the functionality in detail. Act like a senior engineer teaching me.
-11. In this project we use yarn
+11. In this project we use yarn.
+12. Whenever you install a dependency, check if there is already a dependencies installed that does the same.
 
