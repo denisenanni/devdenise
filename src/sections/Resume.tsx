@@ -75,7 +75,7 @@ const Resume = () => {
     <section
       id="resume"
       ref={ref}
-      className="section bg-navy-900 overflow-x-hidden"
+      className="section overflow-x-hidden"
     >
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -85,7 +85,7 @@ const Resume = () => {
       >
         {/* Header */}
         <div className="flex items-center mb-8 md:mb-12 min-w-0">
-          <span className="section-number">04.</span>
+          <span className="section-number">03.</span>
           <h2 className="section-title">Experience</h2>
           <div className="section-divider"></div>
         </div>

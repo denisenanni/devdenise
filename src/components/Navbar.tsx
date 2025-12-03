@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { memo, useCallback, useState, useEffect } from "react";
 
-const links = ["home", "about", "projects", "resume", "contact"];
+const links = ["home", "about", "resume", "contact"];
 
 const Navbar = memo(() => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

@@ -8,7 +8,7 @@ const Home = () => {
     <section
       id="home"
       ref={ref}
-      className="section bg-navy-900 overflow-x-hidden"
+      className="section overflow-x-hidden"
     >
       <motion.div
         initial={{ opacity: 0, y: 50 }}

@@ -62,7 +62,7 @@ const Contact = () => {
     <section
       id="contact"
       ref={ref}
-      className="section bg-navy-900 overflow-x-hidden"
+      className="section overflow-x-hidden"
     >
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -71,7 +71,7 @@ const Contact = () => {
         className="section-content"
       >
         <div className="flex items-center mb-8 md:mb-12 min-w-0">
-          <span className="section-number">05.</span>
+          <span className="section-number">04.</span>
           <h2 className="section-title">Get In Touch</h2>
           <div className="section-divider"></div>
         </div>
