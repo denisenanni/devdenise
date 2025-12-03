@@ -33,23 +33,24 @@ const Contact = () => {
       setStatus("sending");
 
       try {
-        const response = await fetch(
-          "https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec", // replace with your script URL
-          {
-            method: "POST",
-            body: JSON.stringify(formData),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-        if (response.ok) {
-          setStatus("success");
-          setFormData({ name: "", email: "", message: "" });
-        } else {
-          setStatus("error");
+        if (!scriptUrl) {
+          throw new Error("Google Script URL not configured");
         }
+
+        await fetch(scriptUrl, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        // With no-cors mode, we can't read the response, so assume success
+        setStatus("success");
+        setFormData({ name: "", email: "", message: "" });
       } catch (err) {
         console.error(err);
         setStatus("error");
