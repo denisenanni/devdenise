@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useState } from "react";
+import resumePdf from "../assets/CV-Nanni-Software-Dev.pdf";
 
 const experiences = Object.freeze([
   {
@@ -287,8 +288,8 @@ const Resume = () => {
         {/* Download Resume Button */}
         <div className="text-center">
           <a
-            href="/CV-Nanni-Software-Dev.pdf"
-            download
+            href={resumePdf}
+            download="CV-Nanni-Software-Dev.pdf"
             className="btn-primary inline-block"
           >
             Download Full Resume
