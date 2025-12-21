@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { Window } from "../components/desktop";
 
 const technologies = Object.freeze([
   "React",
@@ -12,29 +11,23 @@ const technologies = Object.freeze([
   "Terraform",
 ]);
 
+const infoIcon = (
+  <svg fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+  </svg>
+);
+
 const About = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
-
   return (
-    <section
-      id="about"
-      ref={ref}
-      className="section overflow-x-hidden"
-    >
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="section-content"
-        >
-          <div className="flex items-center mb-8 md:mb-12 min-w-0">
-            <span className="section-number">02.</span>
-            <h2 className="section-title">About Me</h2>
-            <div className="section-divider"></div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 md:gap-12">
-            <div className="space-y-4 text-slate-200">
+    <section id="about" className="min-h-screen flex items-center justify-center p-6">
+      <Window
+        title="About Me"
+        icon={infoIcon}
+        className="w-full max-w-4xl"
+      >
+        <div className="p-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4" style={{ color: 'var(--text-secondary)' }}>
               <p>
                 Hello! I'm Denise, a frontend engineer passionate about creating
                 beautiful and functional web experiences.
@@ -46,20 +39,28 @@ const About = () => {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-slate-100 font-mono text-lg mb-4">
+              <h3
+                className="text-lg mb-4"
+                style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}
+              >
                 Technologies I work with:
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 {technologies.map((tech) => (
-                  <div key={tech} className="flex items-center text-slate-300">
-                    <span className="text-primary-400 mr-2">▹</span>
+                  <div
+                    key={tech}
+                    className="flex items-center"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    <span style={{ color: 'var(--accent)' }} className="mr-2">▹</span>
                     {tech}
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
+      </Window>
     </section>
   );
 };

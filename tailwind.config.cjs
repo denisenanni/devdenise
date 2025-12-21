@@ -7,33 +7,61 @@ module.exports = {
     theme: {
       extend: {
         colors: {
-          // Background colors
+          // Dynamic distro theme colors (via CSS variables)
+          distro: {
+            bg: {
+              primary: 'var(--bg-primary)',
+              secondary: 'var(--bg-secondary)',
+              tertiary: 'var(--bg-tertiary)',
+            },
+            accent: {
+              DEFAULT: 'var(--accent)',
+              hover: 'var(--accent-hover)',
+              muted: 'var(--accent-muted)',
+            },
+            text: {
+              primary: 'var(--text-primary)',
+              secondary: 'var(--text-secondary)',
+              muted: 'var(--text-muted)',
+            },
+            window: {
+              bg: 'var(--window-bg)',
+              border: 'var(--window-border)',
+              header: 'var(--window-header)',
+            },
+            panel: {
+              bg: 'var(--panel-bg)',
+              text: 'var(--panel-text)',
+            },
+            controls: {
+              close: 'var(--close-btn)',
+              minimize: 'var(--minimize-btn)',
+              maximize: 'var(--maximize-btn)',
+            },
+          },
+          // Legacy colors (for backwards compatibility during migration)
           navy: {
-            900: '#0a192f',  // Main background
-            800: '#112240',  // Elevated surfaces (cards, sections)
-            700: '#1d3557',  // Hover states
-            600: '#233554',  // Borders
+            900: '#0a192f',
+            800: '#112240',
+            700: '#1d3557',
+            600: '#233554',
           },
-          // Text colors
           slate: {
-            100: '#ccd6f6',  // Primary text
-            200: '#a8b2d1',  // Secondary text
-            300: '#8892b0',  // Muted text
-            400: '#495670',  // Disabled text
+            100: '#ccd6f6',
+            200: '#a8b2d1',
+            300: '#8892b0',
+            400: '#495670',
           },
-          // Primary accent (mint green)
           primary: {
             400: '#64ffda',
             500: '#5ae4c6',
             600: '#4ccfb3',
           },
-          // Terminal green
           terminal: {
             400: '#00ff41',
             500: '#00e639',
             600: '#00cc33',
           },
-          // Additional accent colors
           accent: {
             red: '#ff6b6b',
             blue: '#57cbff',
@@ -44,6 +72,15 @@ module.exports = {
         fontFamily: {
           sans: ['Inter', 'system-ui', 'sans-serif'],
           mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          // Dynamic distro fonts
+          distro: 'var(--font-primary)',
+          'distro-mono': 'var(--font-mono)',
+        },
+        borderRadius: {
+          'window': 'var(--window-radius)',
+        },
+        boxShadow: {
+          'window': '0 8px 32px var(--window-shadow-color)',
         },
         fontSize: {
           xs: ['0.75rem', { lineHeight: '1rem' }],      // 12px

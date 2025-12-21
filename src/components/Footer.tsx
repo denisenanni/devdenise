@@ -2,47 +2,62 @@ import { Github, Linkedin, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-navy-800 border-t border-slate-400/20 py-12 px-6">
+    <footer
+      className="py-8 px-6"
+      style={{
+        backgroundColor: 'var(--bg-secondary)',
+        borderTop: '1px solid var(--window-border)',
+      }}
+    >
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
           {/* Social Links */}
           <div className="flex gap-6">
             <a
               href="https://github.com/denisenanni"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-300 hover:text-primary-400 transition-colors"
+              className="transition-colors hover:opacity-80"
+              style={{ color: 'var(--text-secondary)' }}
               aria-label="GitHub"
             >
-              <Github size={24} />
+              <Github size={22} />
             </a>
             <a
               href="https://www.linkedin.com/in/denise-nanni"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-300 hover:text-primary-400 transition-colors"
+              className="transition-colors hover:opacity-80"
+              style={{ color: 'var(--text-secondary)' }}
               aria-label="LinkedIn"
             >
-              <Linkedin size={24} />
+              <Linkedin size={22} />
             </a>
             <a
               href="mailto:info@devdenise.com"
-              className="text-slate-300 hover:text-primary-400 transition-colors"
+              className="transition-colors hover:opacity-80"
+              style={{ color: 'var(--text-secondary)' }}
               aria-label="Email"
             >
-              <Mail size={24} />
+              <Mail size={22} />
             </a>
           </div>
 
           {/* Branding */}
-          <p className="text-slate-300 font-mono text-sm">
+          <p
+            className="text-sm"
+            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
+          >
             Denise Nanni &copy; {new Date().getFullYear()}
           </p>
         </div>
 
         {/* Built with */}
         <div className="text-center">
-          <p className="text-slate-400 text-sm font-mono">
+          <p
+            className="text-xs"
+            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
+          >
             Built with React, TypeScript, Tailwind CSS & Framer Motion
           </p>
         </div>

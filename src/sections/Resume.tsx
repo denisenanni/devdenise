@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import { useState } from "react";
+import { Window } from "../components/desktop";
 import resumePdf from "../assets/CV-Nanni-Software-Dev.pdf";
 
 const experiences = Object.freeze([
@@ -64,8 +63,13 @@ const certifications = Object.freeze([
   },
 ]);
 
+const documentIcon = (
+  <svg fill="currentColor" viewBox="0 0 24 24">
+    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+  </svg>
+);
+
 const Resume = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleInteraction = (index: number) => {
@@ -73,36 +77,36 @@ const Resume = () => {
   };
 
   return (
-    <section
-      id="resume"
-      ref={ref}
-      className="section overflow-x-hidden"
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8 }}
-        className="section-content"
+    <section id="resume" className="min-h-screen flex items-center justify-center p-6 py-20">
+      <Window
+        title="Resume - Experience & Education"
+        icon={documentIcon}
+        className="w-full max-w-4xl"
       >
-        {/* Header */}
-        <div className="flex items-center mb-8 md:mb-12 min-w-0">
-          <span className="section-number">03.</span>
-          <h2 className="section-title">Experience</h2>
-          <div className="section-divider"></div>
-        </div>
+        <div className="p-6 max-h-[70vh] overflow-y-auto">
+
+        {/* Experience Section Header */}
+        <h3
+          className="text-xl mb-6 flex items-center"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          <span style={{ color: 'var(--accent)' }} className="mr-2">►</span>
+          Experience
+        </h3>
 
         {/* Interactive Experience Cards */}
-        <div className="mx-auto mx-auto mb-12">
+        <div className="mb-8">
           <div className="space-y-2">
             {experiences.map((exp, index) => (
               <div
                 key={index}
                 data-active={index === activeIndex}
-                className="relative overflow-hidden rounded-lg border border-slate-400/20 bg-navy-800
-                cursor-pointer group transition-all duration-[600ms] ease-out w-full"
+                className="relative overflow-hidden rounded-lg cursor-pointer group transition-all duration-[600ms] ease-out w-full"
                 style={{
                   height: index === activeIndex ? "auto" : "60px",
                   minHeight: "60px",
+                  backgroundColor: 'var(--bg-secondary)',
+                  border: '1px solid var(--window-border)',
                 }}
                 onClick={() => handleInteraction(index)}
                 onMouseEnter={() => handleInteraction(index)}
@@ -118,24 +122,18 @@ const Resume = () => {
               >
                 {/* Background Gradient with Mask */}
                 <div
-                  className="absolute inset-0 transition-all duration-[720ms] ease-out
-                  opacity-40
-                  group-data-[active=true]:opacity-60"
+                  className="absolute inset-0 transition-all duration-[720ms] ease-out opacity-40 group-data-[active=true]:opacity-60"
                   style={{
                     background: exp.gradient,
-                    maskImage:
-                      "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.5) 100%)",
-                    WebkitMaskImage:
-                      "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.5) 100%)",
+                    maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.5) 100%)",
+                    WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.5) 100%)",
                   }}
                 />
 
                 {/* Content */}
                 <div className="relative py-3 md:p-5 p-2">
-                  {/* Always Visible: Role, Company, Period */}
                   <div className="flex items-center justify-between gap-2 md:gap-4 min-h-[28px] min-w-0">
                     <div className="flex-1 flex items-center gap-2 md:gap-4 min-w-0 overflow-hidden">
-                      {/* Icon */}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -144,8 +142,8 @@ const Resume = () => {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="w-5 h-5 flex-shrink-0 text-primary-400 opacity-60 
-                        transition-opacity duration-[600ms] group-data-[active=true]:opacity-100"
+                        className="w-5 h-5 flex-shrink-0 opacity-60 transition-opacity duration-[600ms] group-data-[active=true]:opacity-100"
+                        style={{ color: 'var(--accent)' }}
                       >
                         <rect width="18" height="18" x="3" y="3" rx="2" />
                         <path d="M7 7h10" />
@@ -153,19 +151,18 @@ const Resume = () => {
                         <path d="M7 17h10" />
                       </svg>
 
-                      {/* Title */}
                       <div className="flex-1 min-w-0 overflow-hidden">
-                        <h3 className="text-xs md:text-base font-medium text-slate-100 truncate group-data-[active=true]:text-primary-400 transition-colors">
-                          {exp.title} <span className="text-slate-400">@</span>
-                          <span className="text-primary-400">
-                            {exp.company}
-                          </span>
+                        <h3 className="text-xs md:text-base font-medium truncate transition-colors" style={{ color: 'var(--text-primary)' }}>
+                          {exp.title} <span style={{ color: 'var(--text-muted)' }}>@</span>
+                          <span style={{ color: 'var(--accent)' }}> {exp.company}</span>
                         </h3>
                       </div>
                     </div>
 
-                    {/* Period */}
-                    <span className="text-[10px] md:text-sm text-slate-100 font-mono whitespace-nowrap flex-shrink-0">
+                    <span
+                      className="text-[10px] md:text-sm whitespace-nowrap flex-shrink-0"
+                      style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}
+                    >
                       {exp.period}
                     </span>
                   </div>
@@ -179,23 +176,23 @@ const Resume = () => {
                     }}
                   >
                     <div className="pt-4 space-y-4">
-                      {/* Location */}
-                      <p className="text-sm text-slate-300 font-mono">
+                      <p className="text-sm" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                         📍 {exp.location}
                       </p>
-
-                      {/* Description */}
-                      <p className="text-sm leading-relaxed text-slate-300">
+                      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                         {exp.description}
                       </p>
-
-                      {/* Tech Stack */}
                       <div className="flex flex-wrap gap-2">
                         {exp.technologies.map((tech, i) => (
                           <span
                             key={i}
-                            className="px-3 py-1 bg-navy-900/80 border border-primary-400/30 
-                            rounded-full text-primary-400 text-xs font-mono"
+                            className="px-3 py-1 rounded-full text-xs"
+                            style={{
+                              backgroundColor: 'var(--bg-primary)',
+                              border: '1px solid var(--accent)',
+                              color: 'var(--accent)',
+                              fontFamily: 'var(--font-mono)',
+                            }}
                           >
                             {tech}
                           </span>
@@ -210,92 +207,115 @@ const Resume = () => {
         </div>
 
         {/* Certifications */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mx-auto mb-12"
-        >
-          <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
-            <span className="text-primary-400 font-mono text-lg mr-2">►</span>
+        <div className="mb-8">
+          <h3
+            className="text-xl mb-6 flex items-center"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            <span style={{ color: 'var(--accent)' }} className="mr-2">►</span>
             Certifications
           </h3>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             {certifications.map((cert, index) => (
               <div
                 key={index}
-                className="card flex flex-col items-start gap-2 hover:border-primary-400/50 transition-colors"
+                className="p-4 rounded-lg flex flex-col items-start gap-2 transition-colors"
+                style={{
+                  backgroundColor: 'var(--bg-secondary)',
+                  border: '1px solid var(--window-border)',
+                }}
               >
                 <span className="text-2xl">{cert.icon}</span>
                 <div>
-                  <p className="text-slate-100 font-medium text-sm">
+                  <p className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
                     {cert.name}
                   </p>
-                  <p className="text-slate-400 text-xs font-mono">
+                  <p className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     {cert.date}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Education */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mx-auto mb-12"
-        >
-          <h3 className="text-2xl text-slate-100 mb-6 flex items-center">
-            <span className="text-primary-400 font-mono text-lg mr-2">►</span>
+        <div className="mb-8">
+          <h3
+            className="text-xl mb-6 flex items-center"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            <span style={{ color: 'var(--accent)' }} className="mr-2">►</span>
             Education
           </h3>
           <div className="space-y-4">
-            <div className="card hover:border-primary-400/50 transition-colors">
-              <h4 className="text-slate-100 font-medium mb-2">
+            <div
+              className="p-4 rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'var(--bg-secondary)',
+                border: '1px solid var(--window-border)',
+              }}
+            >
+              <h4 className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                 Software and App Development Course
               </h4>
-              <p className="text-primary-400 font-mono text-sm mb-2">
+              <p className="text-sm mb-2" style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>
                 Accademia Informatica | December 2018 - June 2019
               </p>
-              <p className="text-slate-300 text-sm mb-3">
-                800-hour intensive course covering full-stack web and mobile
-                development
+              <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>
+                800-hour intensive course covering full-stack web and mobile development
               </p>
               <div className="flex flex-wrap gap-2">
-                {["Java SE/EE", "Spring Boot", "Angular", "TypeScript"].map(
-                  (tech, i) => (
-                    <span key={i} className="tech-tag text-xs">
-                      {tech}
-                    </span>
-                  )
-                )}
+                {["Java SE/EE", "Spring Boot", "Angular", "TypeScript"].map((tech, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 rounded-full text-xs"
+                    style={{
+                      border: '1px solid var(--accent)',
+                      color: 'var(--accent)',
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
             </div>
 
-            <div className="card hover:border-primary-400/50 transition-colors">
-              <h4 className="text-slate-100 font-medium mb-2">
+            <div
+              className="p-4 rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'var(--bg-secondary)',
+                border: '1px solid var(--window-border)',
+              }}
+            >
+              <h4 className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                 Bachelor's Degree in Political Science
               </h4>
-              <p className="text-primary-400 font-mono text-sm">
+              <p className="text-sm" style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>
                 La Sapienza University, Rome | 2010 - 2014
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Download Resume Button */}
         <div className="text-center">
           <a
             href={resumePdf}
             download="CV-Nanni-Software-Dev.pdf"
-            className="btn-primary inline-block"
+            className="inline-block px-6 py-3 rounded transition-colors"
+            style={{
+              backgroundColor: 'var(--accent)',
+              color: 'var(--bg-primary)',
+              fontFamily: 'var(--font-mono)',
+            }}
           >
             Download Full Resume
           </a>
         </div>
-      </motion.div>
+        </div>
+      </Window>
     </section>
   );
 };

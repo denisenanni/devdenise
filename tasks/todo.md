@@ -1,4 +1,246 @@
-# Parallax Scroll Effect Implementation
+# Linux Distro-Themed UI Redesign
+
+## Goal
+Transform the portfolio to look like a Linux desktop environment, with a theme switcher that lets users "switch distros" - changing the entire visual experience between Ubuntu, Fedora, Linux Mint, and Arch Linux.
+
+## Design Concept
+
+### Ubuntu Theme (Default)
+- **Window controls**: Orange/amber close, minimize, maximize (left side)
+- **Colors**: Orange (#E95420), Aubergine (#77216F), Dark grey (#2C001E)
+- **Font**: Ubuntu font family
+- **Desktop elements**: Dock on left side, top panel with system tray
+- **Window style**: Rounded corners, subtle shadows
+
+### Fedora Theme
+- **Window controls**: Blue accent
+- **Colors**: Blue (#3C6EB4), Dark blue (#294172), Light blue (#51A2DA)
+- **Font**: Open Sans
+- **Desktop elements**: GNOME-style top bar
+- **Window style**: Modern, minimal
+
+### Linux Mint Theme
+- **Window controls**: Green accent (Mint)
+- **Colors**: Mint green (#87CF3E), Forest (#1A5728), Dark grey (#2D2D2D)
+- **Font**: Roboto
+- **Desktop elements**: Cinnamon-style taskbar at bottom
+- **Window style**: Classic desktop feel
+
+### Arch Linux Theme
+- **Window controls**: Minimal/borderless
+- **Colors**: Blue (#1793D1), Dark grey (#333333), Black (#0D0D0D)
+- **Font**: JetBrains Mono (terminal aesthetic)
+- **Desktop elements**: Minimalist, tiling window manager style
+- **Window style**: Sharp corners, no decorations, terminal-focused
+
+## Architecture
+
+### Theme Context System
+```
+src/
+├── context/
+│   └── ThemeContext.tsx    # React context for distro theme
+├── theme/
+│   ├── theme.ts            # Existing (update for distro support)
+│   ├── distros/
+│   │   ├── ubuntu.ts       # Ubuntu color palette & config
+│   │   ├── fedora.ts       # Fedora color palette & config
+│   │   ├── mint.ts         # Mint color palette & config
+│   │   └── arch.ts         # Arch color palette & config
+│   └── types.ts            # TypeScript types for themes
+├── components/
+│   ├── desktop/
+│   │   ├── Desktop.tsx     # Main desktop container
+│   │   ├── TopPanel.tsx    # System panel (clock, tray)
+│   │   ├── Dock.tsx        # App dock/launcher
+│   │   ├── Window.tsx      # Draggable window component
+│   │   └── WindowControls.tsx # Close/min/max buttons
+│   └── DistroSwitcher.tsx  # Theme toggle component
+```
+
+## Implementation Plan
+
+### Phase 1: Theme Infrastructure ✅ COMPLETE
+- [x] Create TypeScript types for distro themes (`src/theme/types.ts`)
+- [x] Create individual distro theme files:
+  - [x] Ubuntu theme (`src/theme/distros/ubuntu.ts`)
+  - [x] Fedora theme (`src/theme/distros/fedora.ts`)
+  - [x] Mint theme (`src/theme/distros/mint.ts`)
+  - [x] Arch theme (`src/theme/distros/arch.ts`)
+- [x] Create ThemeContext with provider (`src/context/ThemeContext.tsx`)
+- [x] Update Tailwind config for CSS variables approach
+- [x] Update index.css with CSS custom properties
+
+### Phase 2: Desktop Shell Components ✅ COMPLETE
+- [x] Create TopPanel component (clock, system tray, distro logo)
+- [x] Create Dock component (app launcher icons)
+- [x] Create Window component (window frame with title bar)
+- [x] Create WindowControls component (close/minimize/maximize)
+- [x] Create Desktop component (wrapper with panel and dock)
+
+### Phase 3: Distro Switcher ✅ COMPLETE
+- [x] Create DistroSwitcher component with distro logos
+- [ ] Add keyboard shortcut (Super+D) to cycle distros (deferred)
+- [x] Add smooth transition animations between themes
+- [x] Persist selected theme to localStorage
+
+### Phase 4: Content Migration ✅ COMPLETE
+- [x] Wrap existing sections in Window components:
+  - [x] Home → Terminal-style window with whoami command
+  - [x] About → "About Me" window with tech stack
+  - [x] Resume → "Resume" window with scrollable content
+  - [x] Contact → "Contact" window with form
+- [ ] Create terminal-style component for Arch theme (deferred)
+- [ ] Add window minimize/maximize behavior (deferred)
+
+### Phase 5: Visual Polish (PENDING)
+- [ ] Add distro-specific wallpapers (or gradients)
+- [ ] Implement window stacking/focus behavior
+- [ ] Add subtle boot animation on initial load
+- [ ] Create "Desktop icons" for each section
+- [ ] Add notification popups for form submission
+
+### Phase 6: Fonts & Assets (PENDING)
+- [ ] Add Ubuntu font (for Ubuntu theme)
+- [ ] Add Open Sans (for Fedora theme)
+- [x] Keep existing fonts for Mint and Arch
+- [x] Create/source distro logo SVGs (inline SVGs used)
+- [x] Create window control button SVGs (inline SVGs used)
+
+### Phase 7: Testing & Refinement (PENDING)
+- [ ] Test all distro themes
+- [ ] Verify responsive behavior on mobile
+- [ ] Add reduced motion support
+- [x] Security review (no sensitive data exposure)
+- [ ] Performance optimization (lazy load themes)
+
+## Technical Notes
+
+### CSS Variables Strategy
+Each distro theme will set CSS custom properties:
+```css
+:root[data-distro="ubuntu"] {
+  --bg-primary: #2C001E;
+  --bg-secondary: #3C001E;
+  --accent: #E95420;
+  --text-primary: #ffffff;
+  --window-radius: 12px;
+  --controls-position: left;
+}
+```
+
+### Window Component API
+```tsx
+interface WindowProps {
+  title: string;
+  icon?: React.ReactNode;
+  defaultPosition?: { x: number; y: number };
+  defaultSize?: { width: number; height: number };
+  minimized?: boolean;
+  maximized?: boolean;
+  onClose?: () => void;
+  children: React.ReactNode;
+}
+```
+
+### Theme Context API
+```tsx
+interface DistroTheme {
+  name: 'ubuntu' | 'fedora' | 'mint' | 'arch';
+  displayName: string;
+  colors: ColorPalette;
+  fonts: FontConfig;
+  windowStyle: WindowStyleConfig;
+  dockPosition: 'left' | 'bottom';
+}
+
+interface ThemeContextValue {
+  currentDistro: DistroTheme;
+  setDistro: (distro: DistroTheme['name']) => void;
+  cycleDistro: () => void;
+}
+```
+
+## Dependencies to Add
+- None required (using existing Framer Motion for animations)
+- Consider: react-draggable for window movement (or custom implementation)
+
+## Security Considerations
+- Theme preference stored only in localStorage (client-side)
+- No external API calls for themes
+- All assets bundled locally
+- No user data collected for theme switching
+
+---
+
+## Implementation Review (Phase 1-4)
+
+### Files Created
+
+| File | Purpose |
+|------|---------|
+| `src/theme/types.ts` | TypeScript interfaces for distro themes |
+| `src/theme/distros/ubuntu.ts` | Ubuntu color palette and config |
+| `src/theme/distros/fedora.ts` | Fedora color palette and config |
+| `src/theme/distros/mint.ts` | Linux Mint color palette and config |
+| `src/theme/distros/arch.ts` | Arch Linux color palette and config |
+| `src/theme/distros/index.ts` | Theme registry and exports |
+| `src/context/ThemeContext.tsx` | React context + provider for theme switching |
+| `src/components/desktop/Desktop.tsx` | Main desktop wrapper with panel and dock |
+| `src/components/desktop/TopPanel.tsx` | Top panel with clock, system tray, distro name |
+| `src/components/desktop/Dock.tsx` | App dock/launcher with section icons |
+| `src/components/desktop/Window.tsx` | Window frame component with title bar |
+| `src/components/desktop/WindowControls.tsx` | Window control buttons (close/min/max) |
+| `src/components/desktop/DistroSwitcher.tsx` | Dropdown to switch between distros |
+| `src/components/desktop/index.ts` | Barrel export for desktop components |
+
+### Files Modified
+
+| File | Changes |
+|------|---------|
+| `tailwind.config.cjs` | Added `distro.*` CSS variable colors |
+| `src/index.css` | Added CSS custom properties for theming |
+| `src/App.tsx` | Wrapped with ThemeProvider and Desktop |
+| `src/sections/Home.tsx` | Wrapped in Window (terminal style) |
+| `src/sections/About.tsx` | Wrapped in Window |
+| `src/sections/Resume.tsx` | Wrapped in Window with scrollable content |
+| `src/sections/Contact.tsx` | Wrapped in Window |
+| `src/components/Footer.tsx` | Updated to use distro theme colors |
+
+### How Theme Switching Works
+
+1. **ThemeContext** manages the current distro state
+2. When distro changes, CSS custom properties are updated on `:root`
+3. All components use `var(--property)` for colors, fonts, etc.
+4. Theme persists to localStorage automatically
+5. Dock position changes based on distro (left for Ubuntu, bottom for others)
+6. Window controls style changes (colored circles vs GNOME symbolic)
+
+### Distro Differences
+
+| Feature | Ubuntu | Fedora | Mint | Arch |
+|---------|--------|--------|------|------|
+| Accent | Orange | Blue | Green | Blue |
+| Background | Aubergine | Dark grey | Dark grey | Black |
+| Dock | Left | Bottom | Bottom | Bottom |
+| Window controls | Left, colored | Right, symbolic | Right, colored | Right, minimal |
+| Border radius | 12px | 12px | 6px | 0px |
+
+### Security Analysis
+
+✅ No `any` types used - all components properly typed
+✅ No sensitive data exposed in frontend
+✅ No XSS vulnerabilities (no dynamic HTML injection)
+✅ Theme data stored only in localStorage (client-side)
+✅ No external API calls for theme functionality
+
+### TypeScript Build
+
+✅ Zero errors - `yarn tsc --noEmit` passes
+
+---
+
+# Parallax Scroll Effect Implementation (ARCHIVED)
 
 ## Goal
 Add a CSS-based parallax scroll effect similar to the CodePen example (https://codepen.io/dchen05/pen/Qweqdb), adapted to work with the existing UI's navy/slate color scheme.
@@ -471,3 +713,98 @@ After analyzing CodePen SCSS, discovered major discrepancy:
 - ✅ Page length normalized (no extra length from layers)
 - ✅ Layers properly stacked and visible
 - ✅ All TypeScript errors resolved
+
+---
+
+## Phase 5 Visual Polish - Make it "Shine" like Ubuntu
+
+### Goal
+Make the UI look so authentic that users might confuse it for actual Ubuntu/GNOME desktop.
+
+### Changes Implemented
+
+#### 1. Added Authentic Wallpaper Gradients
+**Files Modified:**
+- `src/theme/types.ts` - Added `WallpaperConfig` interface
+- `src/theme/distros/ubuntu.ts` - Ubuntu Jammy-style gradient (orange/aubergine)
+- `src/theme/distros/fedora.ts` - Fedora blue gradient
+- `src/theme/distros/mint.ts` - Linux Mint green gradient
+- `src/theme/distros/arch.ts` - Arch minimal blue/dark gradient
+- `src/context/ThemeContext.tsx` - Apply wallpaper CSS variable
+- `src/components/desktop/Desktop.tsx` - Show wallpaper as fixed background
+
+**Impact:**
+- Each distro now has its authentic wallpaper-style gradient background
+- Wallpaper is fixed and covers the full viewport
+
+#### 2. Improved Top Panel (GNOME Style)
+**File:** `src/components/desktop/TopPanel.tsx`
+
+**Changes:**
+- Added `shadow-panel` class for subtle panel shadow
+- Grouped system tray icons (network/volume/battery) with dropdown chevron
+- Made clock/date clickable with hover state
+- Proper height-matching for panel items
+- Distro-specific styling (Arch has smaller font)
+- Added distro name next to Activities (except Arch)
+
+**Impact:**
+- Panel looks more like authentic GNOME shell
+- Interactive hover states on all clickable elements
+
+#### 3. Added Window Shadows
+**File:** `src/index.css`
+
+**New Classes:**
+- `.shadow-window` - Multi-layer shadow using CSS variable `--window-shadow-color`
+- `.shadow-panel` - Subtle shadow for top panel
+
+**Impact:**
+- Windows now have proper depth with layered shadows
+- Shadows adapt to each distro's theme color
+
+#### 4. Enhanced Dock (Ubuntu Authentic)
+**File:** `src/components/desktop/Dock.tsx`
+
+**Changes:**
+- Added "Show Applications" grid button for Ubuntu (at bottom of left dock)
+- Added separator line between apps and Show Applications
+- Improved active indicator styling (elongated pill for left dock)
+- Better tooltip styling (dark, rounded)
+- Reduced dock item size slightly for more compact look
+- Applied blur backdrop filter to all docks (not just bottom)
+
+**Impact:**
+- Ubuntu dock now has the authentic "Show Applications" button
+- Active indicators match GNOME style (side dot for left dock)
+- More polished tooltip appearance
+
+#### 5. Ubuntu Font Family
+**Files:**
+- `package.json` - `@fontsource/ubuntu` and `@fontsource/ubuntu-mono` already installed
+- `src/fonts.css` - Font-face declarations for Ubuntu fonts
+- `src/index.css` - Imports fonts.css
+- `src/theme/distros/ubuntu.ts` - Uses 'Ubuntu' as primary font
+
+**Impact:**
+- Ubuntu theme uses the authentic Ubuntu font family
+- Ubuntu Mono used for terminal/code sections
+
+### Summary of Distro Differences
+
+| Feature | Ubuntu | Fedora | Mint | Arch |
+|---------|--------|--------|------|------|
+| Wallpaper | Orange/Aubergine gradient | Blue/dark gradient | Green/dark gradient | Blue minimal |
+| Dock | Left + Show Apps button | Bottom | Bottom | Bottom |
+| Panel font | 13px | 13px | 13px | 12px |
+| Active indicator | Vertical pill | Dot | Dot | Dot |
+| Backdrop blur | Yes | Yes | Yes | Yes |
+
+### Security Analysis
+✅ No sensitive data exposed
+✅ All TypeScript types properly defined
+✅ No XSS vulnerabilities
+✅ Theme data stored only in localStorage
+
+### Build Status
+✅ `yarn tsc --noEmit` passes with zero errors
