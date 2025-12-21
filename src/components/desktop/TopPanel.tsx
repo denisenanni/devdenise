@@ -33,7 +33,6 @@ function TopPanel() {
 
   const isArch = distroName === 'arch';
   const isMint = distroName === 'mint';
-  const isFedora = distroName === 'fedora';
 
   // Arch uses a minimal polybar-style panel
   if (isArch) {
