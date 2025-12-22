@@ -252,7 +252,6 @@ const Contact = () => {
                 onKeyDown={handleKeyDown}
                 className="flex-1 bg-transparent outline-none border-none"
                 style={{ color: 'var(--text-primary)', caretColor: 'var(--accent)' }}
-                autoFocus
                 disabled={isInputDisabled}
               />
               <span

@@ -808,3 +808,117 @@ Make the UI look so authentic that users might confuse it for actual Ubuntu/GNOM
 
 ### Build Status
 ✅ `yarn tsc --noEmit` passes with zero errors
+
+---
+
+## Mobile Layout Fix
+
+### Problem
+The desktop-style UI elements (panels, docks, system trays) take too much space on mobile screens, causing content to be cut off or cramped.
+
+**Issues visible in screenshots:**
+1. **Arch**: Top panel with workspaces/cpu/mem info wastes vertical space
+2. **Ubuntu**: Left dock + top panel take too much space, content is cramped
+3. **Fedora**: Top panel + bottom dock crowd the viewport
+4. **Mint**: Bottom taskbar has too many elements (menu, app buttons, system tray, clock)
+
+### Solution
+Simplify the mobile layout by:
+1. **Removing unnecessary elements on mobile** (system tray icons, workspaces, cpu/mem info)
+2. **Simplifying the top panel** - just show time/date, hide Activities button and distro name
+3. **Converting dock to simple bottom nav** - icons only, no labels, compact sizing
+4. **Hiding theme switcher complexity** - keep it simple on mobile
+
+### Implementation Plan
+
+#### Phase 1: Add mobile breakpoint detection
+- [ ] Create a `useIsMobile` hook (or use Tailwind's responsive classes)
+- [ ] Determine breakpoint (768px or smaller = mobile)
+
+#### Phase 2: Simplify TopPanel for mobile
+- [ ] **Ubuntu/Fedora**: Hide "Activities" button, hide distro name, show only time
+- [ ] **Arch**: Hide workspaces, hide cpu/mem info, show only time and distro switcher
+- [ ] **Mint**: Already returns null (no top panel), no changes needed
+- [ ] Reduce panel height on mobile
+
+#### Phase 3: Simplify Dock for mobile
+- [ ] **All themes**: Convert to simple bottom navigation on mobile
+- [ ] Remove labels from Mint taskbar (icons only)
+- [ ] Remove "Show Applications" button from Ubuntu/Fedora
+- [ ] Make dock items smaller (40px instead of 46px)
+- [ ] Remove system tray from Mint taskbar
+- [ ] Keep it centered and compact
+
+#### Phase 4: Adjust Desktop content padding
+- [ ] Reduce top/bottom padding on mobile
+- [ ] Ensure content area uses full viewport width
+
+#### Phase 5: Testing
+- [ ] Test all 4 themes on mobile viewport
+- [ ] Verify navigation still works
+- [ ] Check content is not cut off
+
+### Technical Approach
+Use Tailwind responsive classes where possible (`hidden md:flex`, `md:hidden`), and `window.matchMedia` or a hook for JS-conditional rendering.
+
+### Files to Modify
+- `src/components/desktop/TopPanel.tsx`
+- `src/components/desktop/Dock.tsx`
+- `src/components/desktop/Desktop.tsx`
+- Possibly `src/index.css` for mobile-specific styles
+
+---
+
+## Implementation Review
+
+### Files Created
+| File | Purpose |
+|------|---------|
+| `src/hooks/useIsMobile.ts` | Custom hook for detecting mobile viewport (<768px) |
+
+### Files Modified
+| File | Changes |
+|------|---------|
+| `src/components/desktop/TopPanel.tsx` | Added mobile detection, hide Activities/distro name/system tray on mobile |
+| `src/components/desktop/Dock.tsx` | Added unified mobile bottom nav for all themes |
+| `src/components/desktop/Desktop.tsx` | Added mobile-specific content padding |
+
+### Changes Summary
+
+#### 1. Created `useIsMobile` Hook
+- Uses `window.matchMedia` for efficient breakpoint detection
+- Listens for viewport changes with `addEventListener('change')`
+- Returns `true` when viewport is < 768px
+
+#### 2. TopPanel Mobile Changes
+**Ubuntu/Fedora (GNOME style):**
+- Hidden: Activities button, distro name, system tray icons, power button
+- Visible: Date/time (centered), distro switcher
+
+**Arch (polybar style):**
+- Hidden: Workspace indicators, cpu/mem info
+- Visible: "arch" label, date/time, distro switcher
+
+**Mint:**
+- No changes (already returns null for top panel)
+
+#### 3. Dock Mobile Changes
+All themes now share a unified mobile bottom navigation:
+- Height: 56px with blur backdrop
+- Contains: Menu icon, nav icons (Home/About/Resume/Contact), distro switcher
+- Nav items: 44px touch-friendly buttons with active state highlighting
+- Separators between sections
+
+#### 4. Desktop Padding Mobile Changes
+- Simplified padding: top panel height (if applicable) + 64px bottom for nav
+- No left padding (no left dock on mobile)
+
+### Security Analysis
+- No sensitive data exposed
+- All TypeScript types properly defined
+- No XSS vulnerabilities
+- Hook uses standard browser APIs
+
+### Build Status
+- TypeScript: Zero errors
+- Dev server: Running on http://localhost:5173/

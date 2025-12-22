@@ -1,5 +1,6 @@
 import { memo, useState, useEffect, type ReactNode } from 'react';
 import { useTheme } from '../../context/ThemeContext';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import TopPanel from './TopPanel';
 import Dock from './Dock';
 
@@ -9,6 +10,7 @@ interface DesktopProps {
 
 function Desktop({ children }: DesktopProps) {
   const { currentDistro, distroName } = useTheme();
+  const isMobile = useIsMobile();
   const [activeSection, setActiveSection] = useState('home');
   const isLeftDock = currentDistro.dock.position === 'left';
   const isMint = distroName === 'mint';
@@ -39,8 +41,18 @@ function Desktop({ children }: DesktopProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate padding based on distro
+  // Calculate padding based on distro and viewport
   const getContentPadding = () => {
+    // Mobile: consistent padding for all themes
+    if (isMobile) {
+      return {
+        paddingTop: isMint ? '0' : 'var(--panel-height)',
+        paddingLeft: '0',
+        paddingBottom: '64px', // Space for mobile bottom nav
+      };
+    }
+
+    // Desktop layouts
     if (isMint) {
       // Mint: no top panel, bottom taskbar
       return {

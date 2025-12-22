@@ -1,6 +1,7 @@
 import { memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import DistroSwitcher from './DistroSwitcher';
 
 interface DockItemProps {
@@ -215,6 +216,7 @@ interface DockProps {
 
 function Dock({ activeSection, onNavigate }: DockProps) {
   const { currentDistro, distroName } = useTheme();
+  const isMobile = useIsMobile();
   const isLeftDock = currentDistro.dock.position === 'left';
   const isHorizontal = !isLeftDock;
   const isUbuntu = distroName === 'ubuntu';
@@ -237,6 +239,67 @@ function Dock({ activeSection, onNavigate }: DockProps) {
     { id: 'resume', icon: icons.resume, label: 'Resume' },
     { id: 'contact', icon: icons.contact, label: 'Contact' },
   ];
+
+  // Mobile: Simple bottom navigation for ALL themes
+  if (isMobile) {
+    return (
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center px-4"
+        style={{
+          height: '56px',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(12px)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+        }}
+      >
+        {/* Menu icon */}
+        <button
+          className="flex items-center justify-center rounded-lg transition-colors hover:bg-white/10 mr-2"
+          style={{ width: '40px', height: '40px' }}
+        >
+          <svg className="w-5 h-5" fill="var(--text-primary)" viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </button>
+
+        {/* Separator */}
+        <div className="w-px h-6 mx-2" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
+
+        {/* Navigation items */}
+        <div className="flex items-center gap-1">
+          {dockItems.map((item) => (
+            <motion.button
+              key={item.id}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handleNavigate(item.id)}
+              className="relative flex items-center justify-center rounded-lg transition-all"
+              style={{
+                width: '44px',
+                height: '44px',
+                backgroundColor: activeSection === item.id ? 'var(--accent)' : 'rgba(255,255,255,0.08)',
+              }}
+              aria-label={item.label}
+            >
+              <div
+                className="w-5 h-5"
+                style={{
+                  color: activeSection === item.id ? 'var(--bg-primary)' : 'var(--text-primary)',
+                }}
+              >
+                {item.icon}
+              </div>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Separator */}
+        <div className="w-px h-6 mx-2" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
+
+        {/* Distro Switcher - opens upward on mobile */}
+        <DistroSwitcher openDirection="up" />
+      </nav>
+    );
+  }
 
   // Arch uses a minimal polybar-style dock
   if (isArch) {
