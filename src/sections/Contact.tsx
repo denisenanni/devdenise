@@ -50,9 +50,9 @@ const Contact = () => {
     }
   }, [history]);
 
-  // Auto-focus input
+  // Auto-focus input (without scrolling the page)
   useEffect(() => {
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   }, [step]);
 
   const addLine = (line: TerminalLine) => {
