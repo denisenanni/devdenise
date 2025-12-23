@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
 import type { DistroName } from '../../theme/types';
@@ -61,6 +61,20 @@ function DistroSwitcher({ openDirection = 'down' }: DistroSwitcherProps) {
   // For Mint (bottom taskbar), open upward
   const shouldOpenUp = openDirection === 'up' || distroName === 'mint';
 
+  // Handle Escape key to close dropdown
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   return (
     <div className="relative">
       {/* Trigger Button */}
@@ -68,6 +82,8 @@ function DistroSwitcher({ openDirection = 'down' }: DistroSwitcherProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:bg-white/10 px-2 py-1 rounded transition-colors"
         aria-label="Switch distro theme"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
       >
         <div className="w-4 h-4" style={{ color: currentLogo.color }}>
           {currentLogo.icon}
@@ -104,6 +120,8 @@ function DistroSwitcher({ openDirection = 'down' }: DistroSwitcherProps) {
                 backgroundColor: 'var(--window-bg)',
                 border: '1px solid var(--window-border)',
               }}
+              role="menu"
+              aria-label="Theme options"
             >
               <div className="p-2">
                 <p
@@ -127,6 +145,8 @@ function DistroSwitcher({ openDirection = 'down' }: DistroSwitcherProps) {
                         isActive ? 'bg-white/10' : 'hover:bg-white/5'
                       }`}
                       style={{ color: 'var(--text-primary)' }}
+                      role="menuitem"
+                      aria-current={isActive ? 'true' : undefined}
                     >
                       <div className="w-5 h-5" style={{ color: logo.color }}>
                         {logo.icon}

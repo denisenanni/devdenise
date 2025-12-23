@@ -30,6 +30,7 @@ function DockItem({ icon, label, onClick, isActive, isHorizontal, isShowApps }: 
           : 'rgba(255,255,255,0.08)',
       }}
       aria-label={label}
+      aria-current={isActive ? 'page' : undefined}
     >
       <div
         className="w-6 h-6"
@@ -147,15 +148,16 @@ function MintTaskbar({ dockItems, activeSection, handleNavigate }: MintTaskbarPr
     >
       {/* Left side - Menu and apps */}
       <div className="flex items-center" style={{ gap: '2px' }}>
-        {/* Menu button */}
-        <button
-          className="flex items-center justify-center rounded hover:bg-white/10 transition-colors"
+        {/* Menu button (decorative) */}
+        <div
+          className="flex items-center justify-center rounded"
           style={{ width: '40px', height: '36px' }}
+          aria-hidden="true"
         >
           <svg className="w-5 h-5" fill="var(--accent)" viewBox="0 0 24 24">
             <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
           </svg>
-        </button>
+        </div>
 
         {/* Separator */}
         <div className="w-px h-6 mx-1" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
@@ -170,6 +172,7 @@ function MintTaskbar({ dockItems, activeSection, handleNavigate }: MintTaskbarPr
               backgroundColor: activeSection === item.id ? 'rgba(255,255,255,0.15)' : 'transparent',
               borderBottom: activeSection === item.id ? '2px solid var(--accent)' : '2px solid transparent',
             }}
+            aria-current={activeSection === item.id ? 'page' : undefined}
           >
             <div className="w-4 h-4" style={{ color: 'var(--text-primary)' }}>
               {item.icon}
@@ -252,15 +255,16 @@ function Dock({ activeSection, onNavigate }: DockProps) {
           borderTop: '1px solid rgba(255, 255, 255, 0.1)',
         }}
       >
-        {/* Menu icon */}
-        <button
-          className="flex items-center justify-center rounded-lg transition-colors hover:bg-white/10 mr-2"
+        {/* Menu icon (decorative) */}
+        <div
+          className="flex items-center justify-center rounded-lg mr-2"
           style={{ width: '40px', height: '40px' }}
+          aria-hidden="true"
         >
           <svg className="w-5 h-5" fill="var(--text-primary)" viewBox="0 0 24 24">
             <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
           </svg>
-        </button>
+        </div>
 
         {/* Separator */}
         <div className="w-px h-6 mx-2" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
@@ -279,6 +283,7 @@ function Dock({ activeSection, onNavigate }: DockProps) {
                 backgroundColor: activeSection === item.id ? 'var(--accent)' : 'rgba(255,255,255,0.08)',
               }}
               aria-label={item.label}
+              aria-current={activeSection === item.id ? 'page' : undefined}
             >
               <div
                 className="w-5 h-5"

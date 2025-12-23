@@ -14,7 +14,13 @@ function App() {
       <Desktop>
         <Home />
         <About />
-        <Suspense fallback={<div className="section bg-distro-bg-primary" />}>
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg-primary)' }}>
+            <span className="animate-pulse" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              Loading...
+            </span>
+          </div>
+        }>
           <Resume />
           <Contact />
         </Suspense>

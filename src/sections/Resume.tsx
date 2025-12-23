@@ -4,6 +4,7 @@ import resumePdf from "../assets/CV-Nanni-Software-Dev.pdf";
 
 const experiences = Object.freeze([
   {
+    id: "outmatic-2022",
     title: "Front-end/Full Stack Engineer",
     company: "Outmatic",
     location: "Remote",
@@ -14,6 +15,7 @@ const experiences = Object.freeze([
     gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", // Purple
   },
   {
+    id: "nexum-2022",
     title: "DevOps and Test Engineer",
     company: "Nexum AI",
     location: "Rome - Remote",
@@ -24,6 +26,7 @@ const experiences = Object.freeze([
     gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", // Pink-Red
   },
   {
+    id: "technode-2020",
     title: "Full Stack Web Developer",
     company: "Technode",
     location: "Brescia - Remote",
@@ -34,6 +37,7 @@ const experiences = Object.freeze([
     gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", // Blue
   },
   {
+    id: "catenate-2019",
     title: "Full Stack Web Developer",
     company: "Catenate",
     location: "Rome",
@@ -47,16 +51,19 @@ const experiences = Object.freeze([
 
 const certifications = Object.freeze([
   {
+    id: "gcp-devops-2022",
     name: "Google Professional Cloud DevOps Engineer",
     date: "November 2022",
     icon: "☁️",
   },
   {
+    id: "gcp-ace-2022",
     name: "Google Associate Cloud Engineer",
     date: "June 2022",
     icon: "☁️",
   },
   {
+    id: "oracle-java-2020",
     name: "Oracle Certified Associate, Java SE 8 Programmer",
     date: "June 2020",
     icon: "☕",
@@ -99,7 +106,7 @@ const Resume = () => {
           <div className="space-y-2">
             {experiences.map((exp, index) => (
               <div
-                key={index}
+                key={exp.id}
                 data-active={index === activeIndex}
                 className="relative overflow-hidden rounded-lg cursor-pointer group transition-all duration-[600ms] ease-out w-full"
                 style={{
@@ -183,9 +190,9 @@ const Resume = () => {
                         {exp.description}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {exp.technologies.map((tech, i) => (
+                        {exp.technologies.map((tech) => (
                           <span
-                            key={i}
+                            key={tech}
                             className="px-3 py-1 rounded-full text-xs"
                             style={{
                               backgroundColor: 'var(--bg-primary)',
@@ -216,9 +223,9 @@ const Resume = () => {
             Certifications
           </h3>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {certifications.map((cert, index) => (
+            {certifications.map((cert) => (
               <div
-                key={index}
+                key={cert.id}
                 className="p-4 rounded-lg flex flex-col items-start gap-2 transition-colors"
                 style={{
                   backgroundColor: 'var(--bg-secondary)',
@@ -266,9 +273,9 @@ const Resume = () => {
                 800-hour intensive course covering full-stack web and mobile development
               </p>
               <div className="flex flex-wrap gap-2">
-                {["Java SE/EE", "Spring Boot", "Angular", "TypeScript"].map((tech, i) => (
+                {["Java SE/EE", "Spring Boot", "Angular", "TypeScript"].map((tech) => (
                   <span
-                    key={i}
+                    key={tech}
                     className="px-3 py-1 rounded-full text-xs"
                     style={{
                       border: '1px solid var(--accent)',

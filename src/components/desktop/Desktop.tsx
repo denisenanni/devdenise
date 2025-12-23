@@ -16,11 +16,12 @@ function Desktop({ children }: DesktopProps) {
   const isMint = distroName === 'mint';
   const isArch = distroName === 'arch';
 
-  // Track active section on scroll
+  // Track active section on scroll (throttled with requestAnimationFrame)
   useEffect(() => {
     const sections = ['home', 'about', 'resume', 'contact'];
+    let ticking = false;
 
-    const handleScroll = () => {
+    const updateActiveSection = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
 
       for (const section of sections) {
@@ -33,10 +34,18 @@ function Desktop({ children }: DesktopProps) {
           }
         }
       }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateActiveSection);
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial check
+    updateActiveSection(); // Initial check
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);

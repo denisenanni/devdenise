@@ -63,7 +63,13 @@ const Contact = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const sendMessage = useCallback(async () => {
+  interface FormData {
+    name: string;
+    email: string;
+    message: string;
+  }
+
+  const sendMessage = useCallback(async (data: FormData) => {
     setStep('sending');
     addLine({ type: 'output', text: 'Sending message...' });
 
@@ -77,7 +83,7 @@ const Contact = () => {
       await fetch(scriptUrl, {
         method: 'POST',
         mode: 'no-cors',
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -86,6 +92,7 @@ const Contact = () => {
       addLine({ type: 'output', text: '✓ Message sent successfully!' });
       addLine({ type: 'output', text: "Thanks for reaching out. I'll get back to you soon!" });
       addLine({ type: 'output', text: '' });
+      addLine({ type: 'output', text: "If you don't hear back, email me at info@devdenise.com" });
       addLine({ type: 'prompt', text: "Type 'new' to send another message, or close this window." });
     } catch (err) {
       console.error(err);
@@ -93,7 +100,7 @@ const Contact = () => {
       addLine({ type: 'error', text: '✗ Failed to send message. Please try again.' });
       addLine({ type: 'prompt', text: "Type 'retry' to try again." });
     }
-  }, [formData]);
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -163,7 +170,7 @@ const Contact = () => {
           addLine({ type: 'prompt', text: 'What is your name?' });
           setStep('name');
         } else {
-          sendMessage();
+          sendMessage(formData);
         }
         break;
 
@@ -181,7 +188,7 @@ const Contact = () => {
 
       case 'error':
         if (input.toLowerCase() === 'retry') {
-          sendMessage();
+          sendMessage(formData);
         }
         break;
     }
@@ -198,6 +205,9 @@ const Contact = () => {
       >
         <div
           ref={terminalRef}
+          role="log"
+          aria-label="Contact form terminal"
+          aria-live="polite"
           className="p-4 h-[400px] overflow-y-auto"
           style={{
             backgroundColor: 'var(--bg-primary)',
