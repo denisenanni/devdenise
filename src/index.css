@@ -271,6 +271,23 @@
   }
 }
 
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Allow essential opacity transitions for visibility */
+  .transition-opacity {
+    transition-duration: 150ms !important;
+  }
+}
+
 /* Utility classes */
 @layer utilities {
   /* Custom gradient */

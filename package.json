@@ -13,6 +13,8 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/open-sans": "^5.2.7",
+    "@fontsource/source-code-pro": "^5.2.7",
     "@fontsource/ubuntu": "^5.2.8",
     "@fontsource/ubuntu-mono": "^5.2.8",
     "@testing-library/dom": "^10.4.1",

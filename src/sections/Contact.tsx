@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Window } from "../components/desktop";
 import { useTheme } from "../context/ThemeContext";
+import { useNotification } from "../context/NotificationContext";
 
 const terminalIcon = (
   <svg fill="currentColor" viewBox="0 0 24 24">
@@ -29,6 +30,7 @@ const terminalColors = {
 
 const Contact = () => {
   const { distroName } = useTheme();
+  const { showNotification } = useNotification();
   const colors = terminalColors[distroName];
   const [step, setStep] = useState<Step>('name');
   const [currentInput, setCurrentInput] = useState('');
@@ -94,13 +96,27 @@ const Contact = () => {
       addLine({ type: 'output', text: '' });
       addLine({ type: 'output', text: "If you don't hear back, email me at info@devdenise.com" });
       addLine({ type: 'prompt', text: "Type 'new' to send another message, or close this window." });
+
+      // Show success notification
+      showNotification(
+        'success',
+        'Message Sent!',
+        `Thanks ${data.name}! I'll get back to you soon.`
+      );
     } catch (err) {
       console.error(err);
       setStep('error');
       addLine({ type: 'error', text: '✗ Failed to send message. Please try again.' });
       addLine({ type: 'prompt', text: "Type 'retry' to try again." });
+
+      // Show error notification
+      showNotification(
+        'error',
+        'Failed to Send',
+        'Something went wrong. Please try again or email directly.'
+      );
     }
-  }, []);
+  }, [showNotification]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

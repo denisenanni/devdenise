@@ -390,6 +390,16 @@
   resolved "https://registry.yarnpkg.com/@fontsource/jetbrains-mono/-/jetbrains-mono-5.2.8.tgz#56a1bbb8a36a47fe480d3e90b30b520c89853aa5"
   integrity sha512-6w8/SG4kqvIMu7xd7wt6x3idn1Qux3p9N62s6G3rfldOUYHpWcc2FKrqf+Vo44jRvqWj2oAtTHrZXEP23oSKwQ==
 
+"@fontsource/open-sans@^5.2.7":
+  version "5.2.7"
+  resolved "https://registry.yarnpkg.com/@fontsource/open-sans/-/open-sans-5.2.7.tgz#dc82cec21f3995163bfb15affea937083b4701fb"
+  integrity sha512-8yfgDYjE5O0vmTPdrcjV35y4yMnctsokmi9gN49Gcsr0sjzkMkR97AnKDe6OqZh2SFkYlR28fxOvi21bYEgMSw==
+
+"@fontsource/source-code-pro@^5.2.7":
+  version "5.2.7"
+  resolved "https://registry.yarnpkg.com/@fontsource/source-code-pro/-/source-code-pro-5.2.7.tgz#ab5cd5882e21cdc38076e12939ddf01424139f61"
+  integrity sha512-7papq9TH94KT+S5VSY8cU7tFmwuGkIe3qxXRMscuAXH6AjMU+KJI75f28FzgBVDrlMfA0jjlTV4/x5+H5o/5EQ==
+
 "@fontsource/ubuntu-mono@^5.2.8":
   version "5.2.8"
   resolved "https://registry.yarnpkg.com/@fontsource/ubuntu-mono/-/ubuntu-mono-5.2.8.tgz#ba0ed70cfaa071f979055722369e3f93248e6f44"
