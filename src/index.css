@@ -1,320 +1,128 @@
-/* Optimized font imports - Latin subset only with font-display: swap */
-@import "./fonts.css";
+/* Font Imports - MUST come first */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/700.css';
 
-/* Tailwind directives */
+/* Tailwind Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Default CSS Custom Properties (Ubuntu theme as default) */
-:root {
-  /* Background colors */
-  --bg-primary: #2C001E;
-  --bg-secondary: #3C0028;
-  --bg-tertiary: #4A0032;
-
-  /* Accent colors */
-  --accent: #E95420;
-  --accent-hover: #FF6B35;
-  --accent-muted: #C34113;
-
-  /* Text colors */
-  --text-primary: #FFFFFF;
-  --text-secondary: #E8E8E8;
-  --text-muted: #AEA79F;
-
-  /* Window colors */
-  --window-bg: #3C3C3C;
-  --window-border: #5C5C5C;
-  --window-header: #2C2C2C;
-
-  /* Panel colors */
-  --panel-bg: #2C2C2C;
-  --panel-text: #FFFFFF;
-
-  /* Window control colors */
-  --close-btn: #E95420;
-  --minimize-btn: #F5A623;
-  --maximize-btn: #8BC34A;
-
-  /* Fonts */
-  --font-primary: 'Ubuntu', 'Inter', system-ui, sans-serif;
-  --font-mono: 'Ubuntu Mono', 'JetBrains Mono', monospace;
-
-  /* Window style */
-  --window-radius: 12px;
-  --window-header-height: 36px;
-  --window-controls-position: left;
-  --window-controls-size: 12px;
-  --window-controls-gap: 8px;
-  --window-shadow-color: rgba(0, 0, 0, 0.4);
-
-  /* Dock */
-  --dock-position: left;
-  --dock-size: 64px;
-  --dock-icon-size: 48px;
-  --dock-gap: 4px;
-  --dock-bg: rgba(44, 44, 44, 0.9);
-
-  /* Panel */
-  --panel-height: 28px;
-  --panel-position: top;
-}
-
-/* Global base styles */
+/* Base Styles */
 @layer base {
   * {
-    border-color: color-mix(in srgb, var(--window-border) 20%, transparent);
-  }
-
-  html {
-    @apply scroll-smooth;
+    @apply border-gray-700;
   }
 
   body {
-    @apply bg-distro-bg-primary text-distro-text-secondary antialiased;
-    font-family: var(--font-primary);
+    @apply bg-black text-white font-sans antialiased;
   }
 
-  /* Selection color */
-  ::selection {
-    background-color: color-mix(in srgb, var(--accent) 30%, transparent);
-    color: var(--accent);
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-white;
   }
 
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    @apply w-2;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-distro-bg-secondary;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-distro-text-muted rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-distro-accent;
-  }
-
-  /* Headings */
-  h1 {
-    @apply text-5xl md:text-6xl lg:text-7xl font-bold text-distro-text-primary;
-  }
-
-  h2 {
-    @apply text-4xl md:text-5xl font-bold text-distro-text-primary;
-  }
-
-  h3 {
-    @apply text-2xl md:text-3xl font-semibold text-distro-text-primary;
-  }
-
-  h4 {
-    @apply text-xl md:text-2xl font-semibold text-distro-text-primary;
-  }
-
-  /* Links */
   a {
-    @apply transition-colors duration-200;
+    @apply text-white transition-colors duration-300;
   }
 
-  /* Code blocks */
-  code {
-    @apply text-sm bg-distro-bg-secondary px-2 py-1 rounded text-distro-accent;
-    font-family: var(--font-mono);
-  }
-
-  pre {
-    @apply text-sm bg-distro-bg-secondary p-4 rounded-lg overflow-x-auto;
-    font-family: var(--font-mono);
+  a:hover {
+    @apply text-gray-200;
   }
 }
 
-/* Custom component classes */
+/* Component Classes */
 @layer components {
-  /* Button styles */
+  /* Buttons */
   .btn-primary {
-    @apply px-6 py-3 bg-transparent border-2 border-primary-400 text-primary-400;
-    @apply rounded hover:bg-primary-400/10 transition-all duration-200;
-    @apply font-mono text-sm;
+    @apply px-6 py-3 bg-transparent border-2 border-white text-white font-mono text-sm
+    rounded hover:bg-white hover:text-black transition-all duration-300;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-navy-800 border-2 border-slate-300 text-slate-200;
-    @apply rounded hover:border-primary-400 hover:text-primary-400 transition-all duration-200;
-    @apply font-mono text-sm;
+    @apply px-6 py-3 bg-white text-black font-mono text-sm
+    rounded hover:bg-gray-200 transition-all duration-300;
   }
 
-  /* Card styles */
+  /* Cards */
   .card {
-    @apply bg-navy-800 rounded-lg p-6 border border-slate-400/20;
-    @apply transition-all duration-300;
+    @apply bg-black-lighter border border-gray-700 rounded-lg p-6;
   }
 
   .card-hover {
-    @apply card hover:border-primary-400/50 hover:-translate-y-1;
-    @apply hover:shadow-glow-md;
+    @apply card hover:border-white transition-all duration-300 hover:-translate-y-1;
   }
 
-  /* Section container */
+  /* Tech Tags */
+  .tech-tag {
+    @apply px-3 py-1 bg-transparent border border-gray-600 rounded-full 
+    text-white text-xs font-mono hover:border-white transition-colors;
+  }
+
+  /* Sections */
   .section {
-    @apply min-h-screen flex flex-col justify-center py-20 px-6 md:px-12 lg:px-24;
+    @apply min-h-screen flex flex-col justify-center py-20 px-4 sm:px-6 lg:px-8;
   }
 
   .section-content {
-    @apply max-w-4xl mx-auto;
-  }
-
-  /* Terminal styles */
-  .terminal {
-    @apply bg-black/90 border border-terminal-400 rounded-lg;
-    @apply font-mono text-terminal-400 shadow-terminal;
-  }
-
-  .terminal-header {
-    @apply bg-navy-800 px-4 py-2 rounded-t-lg flex items-center gap-2;
-    @apply border-b border-terminal-400/30;
-  }
-
-  .terminal-button {
-    @apply w-3 h-3 rounded-full;
-  }
-
-  .terminal-red {
-    @apply terminal-button bg-accent-red;
-  }
-
-  .terminal-yellow {
-    @apply terminal-button bg-accent-yellow;
-  }
-
-  .terminal-green {
-    @apply terminal-button bg-terminal-400;
-  }
-
-  .terminal-content {
-    @apply p-4 min-h-[300px] max-h-[500px] overflow-y-auto;
-  }
-
-  .terminal-line {
-    @apply mb-2;
-  }
-
-  .terminal-prompt {
-    @apply text-primary-400;
-  }
-
-  .terminal-cursor {
-    @apply inline-block w-2 h-5 bg-terminal-400 animate-blink ml-1;
-  }
-
-  /* Navbar styles */
-  .nav-link {
-    @apply text-slate-300 hover:text-primary-400 transition-colors duration-200;
-    @apply font-mono text-sm;
-  }
-
-  .nav-link-active {
-    @apply text-primary-400;
-  }
-
-  /* Project card styles */
-  .project-card {
-    @apply card-hover relative overflow-hidden;
-  }
-
-  .project-image {
-    @apply rounded-lg overflow-hidden mb-4;
-  }
-
-  .project-overlay {
-    @apply absolute inset-0 bg-primary-400/10 opacity-0 group-hover:opacity-100;
-    @apply transition-opacity duration-300;
-  }
-
-  /* Tech tag styles */
-  .tech-tag {
-    @apply px-3 py-1 bg-navy-800 border border-primary-400/30 rounded-full;
-    @apply text-primary-400 text-xs font-mono;
-    @apply hover:border-primary-400 hover:bg-primary-400/10 transition-all duration-200;
-  }
-
-  /* Section numbering */
-  .section-number {
-    @apply text-primary-400 font-mono text-lg mr-2;
+    @apply max-w-6xl mx-auto w-full;
   }
 
   .section-title {
-    @apply text-slate-100 text-3xl md:text-4xl font-bold;
+    @apply text-3xl md:text-4xl font-bold text-white min-w-max;
+  }
+
+  .section-number {
+    @apply font-mono text-lg md:text-xl text-gray-400 mr-4;
   }
 
   .section-divider {
-    @apply h-px bg-slate-400/20 flex-1 ml-4;
+    @apply flex-1 h-px bg-gray-700 ml-6;
   }
 
-  /* Glow text effect */
-  .text-glow {
-    @apply text-primary-400;
-    text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
-  }
-
-  /* Typing animation */
-  .typing {
-    @apply inline-block;
-    animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 3px solid;
+  /* Navigation */
+  .nav-link {
+    @apply text-gray-300 hover:text-white font-mono text-sm transition-colors duration-300;
   }
 }
 
-/* Reduced Motion Support */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-
-  /* Allow essential opacity transitions for visibility */
-  .transition-opacity {
-    transition-duration: 150ms !important;
-  }
-}
-
-/* Utility classes */
+/* Utility Classes */
 @layer utilities {
-  /* Custom gradient */
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary-400 to-terminal-400 bg-clip-text text-transparent;
+  .text-gradient {
+    @apply bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent;
   }
 
-  /* Smooth transitions */
-  .transition-smooth {
-    @apply transition-all duration-300 ease-in-out;
+  .border-gradient {
+    @apply border-2 border-transparent bg-gradient-to-r from-white to-gray-600 bg-origin-border;
   }
+}
 
-  /* Backdrop blur */
-  .glass {
-    @apply bg-navy-800/80 backdrop-blur-md;
-  }
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
 
-  /* Window shadow using CSS variable */
-  .shadow-window {
-    box-shadow:
-      0 3px 8px 0 var(--window-shadow-color),
-      0 10px 20px -5px var(--window-shadow-color),
-      0 0 0 1px var(--window-border);
-  }
+/* Selection */
+::selection {
+  @apply bg-white text-black;
+}
 
-  /* Panel shadow for top bar */
-  .shadow-panel {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
+/* Scrollbar (Webkit) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
 }

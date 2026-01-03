@@ -41,11 +41,11 @@ const Navbar = memo(() => {
   }, [isMobileMenuOpen, closeMobileMenu]);
 
   return (
-    <nav className="fixed top-0 w-full bg-navy-900/95 backdrop-blur-md border-b border-slate-400/20 z-50 animate-slide-down">
+    <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-md border-b border-gray-700 z-50 animate-slide-down">
       <div className="max-w-6xl mx-auto px-6">
         {/* Desktop Navigation */}
         <ul className="hidden md:flex justify-center md:justify-end space-x-8 py-6">
-          {links.map((link, index) => (
+          {links.map((link) => (
             <motion.li
               key={link}
               className="cursor-pointer nav-link"
@@ -53,7 +53,6 @@ const Navbar = memo(() => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="section-number">0{index + 1}.</span>
               {link.charAt(0).toUpperCase() + link.slice(1)}
             </motion.li>
           ))}
@@ -63,7 +62,7 @@ const Navbar = memo(() => {
         <div className="flex md:hidden justify-end py-6 relative z-[60]">
           <button
             onClick={toggleMobileMenu}
-            className="relative w-8 h-8 flex flex-col justify-center items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-primary-400 rounded"
+            className="relative w-8 h-8 flex flex-col justify-center items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-white rounded"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMobileMenuOpen}
           >
@@ -71,17 +70,17 @@ const Navbar = memo(() => {
               animate={
                 isMobileMenuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }
               }
-              className="w-6 h-0.5 bg-primary-400 transition-all"
+              className="w-6 h-0.5 bg-white transition-all"
             />
             <motion.span
               animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-              className="w-6 h-0.5 bg-primary-400 transition-all"
+              className="w-6 h-0.5 bg-white transition-all"
             />
             <motion.span
               animate={
                 isMobileMenuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }
               }
-              className="w-6 h-0.5 bg-primary-400 transition-all"
+              className="w-6 h-0.5 bg-white transition-all"
             />
           </button>
         </div>
@@ -107,10 +106,10 @@ const Navbar = memo(() => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-navy-900 border-l border-slate-400/20 z-[55] md:hidden shadow-2xl"
+              className="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-black border-l border-gray-700 z-[55] md:hidden shadow-2xl"
             >
-              <div className="flex flex-col h-full pt-20 bg-navy-900">
-                <nav aria-label="Mobile navigation" className="bg-navy-900">
+              <div className="flex flex-col h-full pt-20 bg-black">
+                <nav aria-label="Mobile navigation" className="bg-black">
                   <ul className="flex flex-col space-y-8 p-4">
                     {links.map((link, index) => (
                       <motion.li
@@ -121,10 +120,7 @@ const Navbar = memo(() => {
                         className="cursor-pointer"
                         onClick={() => scrollToSection(link)}
                       >
-                        <div className="flex items-center space-x-3 text-slate-300 hover:text-primary-400 transition-colors duration-200">
-                          <span className="text-primary-400 font-mono text-base">
-                            0{index + 1}.
-                          </span>
+                        <div className="text-gray-300 hover:text-white transition-colors duration-200">
                           <span className="font-mono text-lg">
                             {link.charAt(0).toUpperCase() + link.slice(1)}
                           </span>

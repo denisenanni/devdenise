@@ -1,295 +1,228 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { Window } from "../components/desktop";
-import { useTheme } from "../context/ThemeContext";
-import { useNotification } from "../context/NotificationContext";
-
-const terminalIcon = (
-  <svg fill="currentColor" viewBox="0 0 24 24">
-    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-7-2h5v-2h-5v2zm-5.5-1.5l1.41 1.41L6 14l2.91-2.91-1.41-1.41L4.59 12.5l2.91 2z" />
-  </svg>
-);
-
-type Step = 'name' | 'email' | 'message' | 'confirm' | 'sending' | 'success' | 'error';
-
-interface TerminalLine {
-  type: 'prompt' | 'input' | 'output' | 'error';
-  text: string;
-}
-
-const PROMPT_USER = 'visitor';
-const PROMPT_HOST = 'portfolio';
-const PROMPT_PATH = '~/contact';
-
-// Terminal prompt colors per distro
-const terminalColors = {
-  ubuntu: { user: '#8AE234', path: '#729FCF' },      // Classic Ubuntu green/blue
-  fedora: { user: '#51A2DA', path: '#A3BE8C' },      // Fedora blue / soft green
-  mint: { user: '#8BC34A', path: '#4FC3F7' },        // Mint green / cyan
-  arch: { user: '#1793D1', path: '#1793D1' },        // Arch blue monochrome
-};
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { useState } from "react";
+import type { FormEvent } from "react";
 
 const Contact = () => {
-  const { distroName } = useTheme();
-  const { showNotification } = useNotification();
-  const colors = terminalColors[distroName];
-  const [step, setStep] = useState<Step>('name');
-  const [currentInput, setCurrentInput] = useState('');
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [history, setHistory] = useState<TerminalLine[]>([
-    { type: 'output', text: "Welcome to Denise's contact terminal!" },
-    { type: 'output', text: "Let's get in touch. Answer a few questions:" },
-    { type: 'output', text: '' },
-    { type: 'prompt', text: 'What is your name?' },
-  ]);
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
-  }, [history]);
-
-  // Auto-focus input (without scrolling the page)
-  useEffect(() => {
-    inputRef.current?.focus({ preventScroll: true });
-  }, [step]);
-
-  const addLine = (line: TerminalLine) => {
-    setHistory(prev => [...prev, line]);
-  };
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  interface FormData {
-    name: string;
-    email: string;
-    message: string;
-  }
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
 
-  const sendMessage = useCallback(async (data: FormData) => {
-    setStep('sending');
-    addLine({ type: 'output', text: 'Sending message...' });
+    if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    if (!validateEmail(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (formData.message.trim().length < 10) {
+      newErrors.message = "Message must be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    setStatus("sending");
 
     try {
       const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
       if (!scriptUrl) {
-        throw new Error('Google Script URL not configured');
+        throw new Error("Google Script URL not configured");
       }
 
       await fetch(scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
       });
 
-      setStep('success');
-      addLine({ type: 'output', text: '' });
-      addLine({ type: 'output', text: '✓ Message sent successfully!' });
-      addLine({ type: 'output', text: "Thanks for reaching out. I'll get back to you soon!" });
-      addLine({ type: 'output', text: '' });
-      addLine({ type: 'output', text: "If you don't hear back, email me at info@devdenise.com" });
-      addLine({ type: 'prompt', text: "Type 'new' to send another message, or close this window." });
-
-      // Show success notification
-      showNotification(
-        'success',
-        'Message Sent!',
-        `Thanks ${data.name}! I'll get back to you soon.`
-      );
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+      setErrors({});
     } catch (err) {
       console.error(err);
-      setStep('error');
-      addLine({ type: 'error', text: '✗ Failed to send message. Please try again.' });
-      addLine({ type: 'prompt', text: "Type 'retry' to try again." });
-
-      // Show error notification
-      showNotification(
-        'error',
-        'Failed to Send',
-        'Something went wrong. Please try again or email directly.'
-      );
-    }
-  }, [showNotification]);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      processInput();
+      setStatus("error");
     }
   };
 
-  const processInput = () => {
-    const input = currentInput.trim();
-
-    if (!input && step !== 'confirm') return;
-
-    // Add user input to history
-    if (input) {
-      addLine({ type: 'input', text: input });
-    }
-
-    setCurrentInput('');
-
-    switch (step) {
-      case 'name':
-        if (input.length < 2) {
-          addLine({ type: 'error', text: 'Please enter a valid name (at least 2 characters).' });
-          addLine({ type: 'prompt', text: 'What is your name?' });
-          return;
-        }
-        setFormData(prev => ({ ...prev, name: input }));
-        addLine({ type: 'output', text: `Nice to meet you, ${input}!` });
-        addLine({ type: 'prompt', text: 'What is your email address?' });
-        setStep('email');
-        break;
-
-      case 'email':
-        if (!validateEmail(input)) {
-          addLine({ type: 'error', text: 'Please enter a valid email address.' });
-          addLine({ type: 'prompt', text: 'What is your email address?' });
-          return;
-        }
-        setFormData(prev => ({ ...prev, email: input }));
-        addLine({ type: 'output', text: 'Got it!' });
-        addLine({ type: 'prompt', text: 'What would you like to say? (your message)' });
-        setStep('message');
-        break;
-
-      case 'message':
-        if (input.length < 10) {
-          addLine({ type: 'error', text: 'Please enter a longer message (at least 10 characters).' });
-          addLine({ type: 'prompt', text: 'What would you like to say?' });
-          return;
-        }
-        setFormData(prev => ({ ...prev, message: input }));
-        addLine({ type: 'output', text: '' });
-        addLine({ type: 'output', text: '--- Message Preview ---' });
-        addLine({ type: 'output', text: `From: ${formData.name} <${formData.email}>` });
-        addLine({ type: 'output', text: `Message: ${input}` });
-        addLine({ type: 'output', text: '-----------------------' });
-        addLine({ type: 'output', text: '' });
-        addLine({ type: 'prompt', text: "Press Enter to send, or type 'edit' to start over." });
-        setStep('confirm');
-        break;
-
-      case 'confirm':
-        if (input.toLowerCase() === 'edit') {
-          setFormData({ name: '', email: '', message: '' });
-          addLine({ type: 'output', text: "Let's start over." });
-          addLine({ type: 'prompt', text: 'What is your name?' });
-          setStep('name');
-        } else {
-          sendMessage(formData);
-        }
-        break;
-
-      case 'success':
-        if (input.toLowerCase() === 'new') {
-          setFormData({ name: '', email: '', message: '' });
-          setHistory([
-            { type: 'output', text: "Welcome back! Let's send another message." },
-            { type: 'output', text: '' },
-            { type: 'prompt', text: 'What is your name?' },
-          ]);
-          setStep('name');
-        }
-        break;
-
-      case 'error':
-        if (input.toLowerCase() === 'retry') {
-          sendMessage(formData);
-        }
-        break;
-    }
+  const handleReset = () => {
+    setStatus("idle");
+    setFormData({ name: "", email: "", message: "" });
+    setErrors({});
   };
-
-  const isInputDisabled = step === 'sending';
 
   return (
-    <section id="contact" className="min-h-screen flex items-center justify-center p-6">
-      <Window
-        title="denise@portfolio: ~/contact"
-        icon={terminalIcon}
-        className="w-full max-w-2xl"
+    <section id="contact" ref={ref} className="section bg-black">
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8 }}
+        className="section-content"
       >
-        <div
-          ref={terminalRef}
-          role="log"
-          aria-label="Contact form terminal"
-          aria-live="polite"
-          className="p-4 h-[400px] overflow-y-auto"
-          style={{
-            backgroundColor: 'var(--bg-primary)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '14px',
-          }}
-          onClick={() => inputRef.current?.focus()}
-        >
-          {/* Terminal history */}
-          {history.map((line, index) => (
-            <div key={index} className="mb-1">
-              {line.type === 'input' && (
-                <>
-                  <span style={{ color: colors.user }}>{PROMPT_USER}@{PROMPT_HOST}</span>
-                  <span style={{ color: 'var(--text-primary)' }}>:</span>
-                  <span style={{ color: colors.path }}>{PROMPT_PATH}</span>
-                  <span style={{ color: 'var(--text-primary)' }}>$ </span>
-                </>
-              )}
-              {line.type === 'prompt' && (
-                <span style={{ color: 'var(--accent)' }}>? </span>
-              )}
-              <span
-                style={{
-                  color:
-                    line.type === 'error'
-                      ? '#ff6b6b'
-                      : line.type === 'prompt'
-                      ? 'var(--accent)'
-                      : line.type === 'input'
-                      ? 'var(--text-primary)'
-                      : 'var(--text-secondary)',
-                }}
-              >
-                {line.text}
-              </span>
-            </div>
-          ))}
+        {/* Header */}
+        <div className="flex items-center justify-center mb-12">
+          <h2 className="section-title">Get In Touch</h2>
+        </div>
 
-          {/* Current input line */}
-          {!isInputDisabled && (
-            <div className="flex items-center">
-              <span style={{ color: colors.user }}>{PROMPT_USER}@{PROMPT_HOST}</span>
-              <span style={{ color: 'var(--text-primary)' }}>:</span>
-              <span style={{ color: colors.path }}>{PROMPT_PATH}</span>
-              <span style={{ color: 'var(--text-primary)' }}>$ </span>
-              <input
-                ref={inputRef}
-                type="text"
-                value={currentInput}
-                onChange={(e) => setCurrentInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent outline-none border-none"
-                style={{ color: 'var(--text-primary)', caretColor: 'var(--accent)' }}
-                disabled={isInputDisabled}
-              />
-              <span
-                className="animate-pulse"
-                style={{ color: colors.user }}
-              >
-                _
-              </span>
-            </div>
+        {/* Content */}
+        <div className="max-w-2xl mx-auto">
+          <p className="text-gray-300 text-lg text-center mb-12">
+            Available for contract work and interesting projects. Feel free to reach out
+            if you'd like to work together or just want to say hello.
+          </p>
+
+          {status === "success" ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-12"
+            >
+              <div className="mb-6">
+                <svg
+                  className="w-16 h-16 mx-auto text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Message Sent!</h3>
+              <p className="text-gray-300 mb-8">
+                Thanks for reaching out. I'll get back to you soon!
+              </p>
+              <button onClick={handleReset} className="btn-primary">
+                Send Another Message
+              </button>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Field */}
+              <div>
+                <label htmlFor="name" className="block text-sm font-mono text-gray-300 mb-2">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className={`w-full px-4 py-3 bg-black border ${
+                    errors.name ? "border-red-500" : "border-gray-700"
+                  } rounded text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors`}
+                  placeholder="Your name"
+                  disabled={status === "sending"}
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-red-500 font-mono">{errors.name}</p>
+                )}
+              </div>
+
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-mono text-gray-300 mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className={`w-full px-4 py-3 bg-black border ${
+                    errors.email ? "border-red-500" : "border-gray-700"
+                  } rounded text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors`}
+                  placeholder="your.email@example.com"
+                  disabled={status === "sending"}
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500 font-mono">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Message Field */}
+              <div>
+                <label htmlFor="message" className="block text-sm font-mono text-gray-300 mb-2">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  rows={6}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className={`w-full px-4 py-3 bg-black border ${
+                    errors.message ? "border-red-500" : "border-gray-700"
+                  } rounded text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors resize-none`}
+                  placeholder="Your message..."
+                  disabled={status === "sending"}
+                />
+                {errors.message && (
+                  <p className="mt-1 text-sm text-red-500 font-mono">{errors.message}</p>
+                )}
+              </div>
+
+              {/* Error Message */}
+              {status === "error" && (
+                <div className="p-4 bg-red-500/10 border border-red-500 rounded">
+                  <p className="text-red-500 text-sm font-mono">
+                    Failed to send message. Please try again or email me directly at{" "}
+                    <a href="mailto:info@devdenise.com" className="underline">
+                      info@devdenise.com
+                    </a>
+                  </p>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  type="submit"
+                  disabled={status === "sending"}
+                  className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {status === "sending" ? "Sending..." : "Send Message"}
+                </button>
+                <a
+                  href="https://www.linkedin.com/in/denise-nanni"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary"
+                  aria-label="Visit LinkedIn profile"
+                >
+                  LinkedIn
+                </a>
+              </div>
+            </form>
           )}
         </div>
-      </Window>
+      </motion.div>
     </section>
   );
 };
