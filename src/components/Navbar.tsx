@@ -3,6 +3,11 @@ import { memo, useCallback, useState, useEffect } from "react";
 
 const links = ["home", "about", "resume", "contact"];
 
+const smooth = {
+  duration: 0.8,
+  ease: [0.25, 0.1, 0.25, 1],
+};
+
 const Navbar = memo(() => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -30,7 +35,6 @@ const Navbar = memo(() => {
 
     if (isMobileMenuOpen) {
       document.addEventListener("keydown", handleEscape);
-      // Prevent body scroll when menu is open
       document.body.style.overflow = "hidden";
     }
 
@@ -41,16 +45,24 @@ const Navbar = memo(() => {
   }, [isMobileMenuOpen, closeMobileMenu]);
 
   return (
-    <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-md border-b border-gray-700 z-50 animate-slide-down">
+    <motion.nav
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...smooth, delay: 0.1 }}
+      className="fixed top-0 w-full bg-black/95 backdrop-blur-md border-b border-gray-700 z-50"
+    >
       <div className="max-w-6xl mx-auto px-6">
         {/* Desktop Navigation */}
         <ul className="hidden md:flex justify-center md:justify-end space-x-8 py-6">
-          {links.map((link) => (
+          {links.map((link, index) => (
             <motion.li
               key={link}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...smooth, delay: 0.2 + index * 0.1 }}
               className="cursor-pointer nav-link"
               onClick={() => scrollToSection(link)}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               {link.charAt(0).toUpperCase() + link.slice(1)}
@@ -95,6 +107,7 @@ const Navbar = memo(() => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
               onClick={closeMobileMenu}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden"
               aria-hidden="true"
@@ -105,7 +118,7 @@ const Navbar = memo(() => {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.3 }}
+              transition={{ type: "tween", duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
               className="fixed top-0 right-0 h-full w-3/4 max-w-sm bg-black border-l border-gray-700 z-[55] md:hidden shadow-2xl"
             >
               <div className="flex flex-col h-full pt-20 bg-black">
@@ -116,7 +129,7 @@ const Navbar = memo(() => {
                         key={link}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ ...smooth, delay: index * 0.08 }}
                         className="cursor-pointer"
                         onClick={() => scrollToSection(link)}
                       >
@@ -134,7 +147,7 @@ const Navbar = memo(() => {
           </>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 });
 

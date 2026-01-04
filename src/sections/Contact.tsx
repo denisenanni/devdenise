@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
-const Contact = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+const smooth = {
+  duration: 0.8,
+  ease: [0.25, 0.1, 0.25, 1],
+};
 
+const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -75,29 +77,37 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" ref={ref} className="section bg-black">
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8 }}
-        className="section-content"
-      >
+    <section id="contact" className="section bg-black">
+      <div className="section-content">
         {/* Header */}
-        <div className="flex items-center justify-center mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={smooth}
+          className="flex items-center justify-center mb-12"
+        >
           <h2 className="section-title">Get In Touch</h2>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="max-w-2xl mx-auto">
-          <p className="text-gray-300 text-lg text-center mb-12">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ ...smooth, delay: 0.1 }}
+            className="text-gray-300 text-lg text-center mb-12"
+          >
             Available for contract work and interesting projects. Feel free to reach out
             if you'd like to work together or just want to say hello.
-          </p>
+          </motion.p>
 
           {status === "success" ? (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
+              transition={smooth}
               className="text-center py-12"
             >
               <div className="mb-6">
@@ -124,7 +134,14 @@ const Contact = () => {
               </button>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <motion.form
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ ...smooth, delay: 0.2 }}
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
               {/* Name Field */}
               <div>
                 <label htmlFor="name" className="block text-sm font-mono text-gray-300 mb-2">
@@ -219,10 +236,10 @@ const Contact = () => {
                   LinkedIn
                 </a>
               </div>
-            </form>
+            </motion.form>
           )}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };

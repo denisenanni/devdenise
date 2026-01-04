@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 
 const technologies = Object.freeze([
   "React",
@@ -14,47 +13,81 @@ const technologies = Object.freeze([
   "Tailwind CSS",
 ]);
 
-const About = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+const smooth = {
+  duration: 0.8,
+  ease: [0.25, 0.1, 0.25, 1],
+};
 
+const About = () => {
   return (
-    <section id="about" ref={ref} className="section bg-black">
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8 }}
-        className="section-content"
-      >
+    <section id="about" className="section bg-black">
+      <div className="section-content">
         {/* Header */}
-        <div className="flex items-center mb-12">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={smooth}
+          className="flex items-center mb-12"
+        >
           <h2 className="section-title">About</h2>
           <div className="section-divider"></div>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="max-w-3xl">
-          <p className="text-gray-300 text-lg mb-6">
+          <motion.p
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ ...smooth, delay: 0.1 }}
+            className="text-gray-300 text-lg mb-6"
+          >
             Full Stack Engineer with 5+ years of experience building web applications,
             e-commerce platforms, and cloud infrastructure.
-          </p>
-          <p className="text-gray-300 text-lg mb-6">
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ ...smooth, delay: 0.2 }}
+            className="text-gray-300 text-lg mb-6"
+          >
             Currently working with React, TypeScript, .NET, and cloud technologies.
             Google Cloud certified with expertise in DevOps automation and CI/CD pipelines.
-          </p>
+          </motion.p>
 
           {/* Tech Stack */}
-          <div className="mt-8">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ ...smooth, delay: 0.3 }}
+            className="mt-8"
+          >
             <h3 className="text-white text-xl font-bold mb-4">Tech Stack</h3>
             <div className="flex flex-wrap gap-2">
-              {technologies.map((tech) => (
-                <span key={tech} className="tech-tag">
+              {technologies.map((tech, index) => (
+                <motion.span
+                  key={tech}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                    ease: [0.25, 0.1, 0.25, 1],
+                    delay: 0.4 + index * 0.04,
+                  }}
+                  className="tech-tag"
+                >
                   {tech}
-                </span>
+                </motion.span>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };
