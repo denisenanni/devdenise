@@ -288,7 +288,7 @@ const Resume = () => {
           className="text-center"
         >
           <a
-            href="/CV-Nanni-Software-Dev.pdf"
+            href="/cv-Nanni.pdf"
             download
             className="btn-primary inline-block"
           >
