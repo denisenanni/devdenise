@@ -102,6 +102,16 @@ const Resume = () => {
     useTransform(eduScroll, [0, 1], [15, -15]),
   ];
 
+  const handleResumeDownload = () => {
+    if (typeof window.gtag !== "undefined") {
+      window.gtag("event", "resume_download", {
+        event_category: "engagement",
+        event_label: "CV Download",
+        value: 1,
+      });
+    }
+  };
+
   return (
     <section id="resume" className="section bg-black">
       <div className="section-content">
@@ -126,7 +136,7 @@ const Resume = () => {
               initial={{
                 opacity: 0,
                 x: index % 2 === 0 ? -60 : 60,
-                scale: 0.95
+                scale: 0.95,
               }}
               whileInView={{ opacity: 1, x: 0, scale: 1 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -187,7 +197,10 @@ const Resume = () => {
             <span className="text-gray-400 font-mono text-lg mr-2">►</span>
             Certifications
           </h3>
-          <div ref={certRef} className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div
+            ref={certRef}
+            className="grid sm:grid-cols-2 md:grid-cols-3 gap-4"
+          >
             {certifications.map((cert, index) => (
               <motion.div
                 key={index}
@@ -252,7 +265,7 @@ const Resume = () => {
                     <span key={i} className="tech-tag text-xs">
                       {tech}
                     </span>
-                  )
+                  ),
                 )}
               </div>
             </motion.div>
@@ -291,6 +304,7 @@ const Resume = () => {
             href="/cv-Nanni.pdf"
             download
             className="btn-primary inline-block"
+            onClick={handleResumeDownload}
           >
             Download Full Resume
           </a>
